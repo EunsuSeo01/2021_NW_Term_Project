@@ -11,13 +11,27 @@ class EchoThread extends Thread{
 	Socket socket;
 	Vector<Socket> vec;
 	public EchoThread(Socket socket, Vector<Socket> vec){
-		this.socket = socket;
-		this.vec = vec;
+		// If Socket and Vector are correct, set it to value.
+		if (socket != null && vec != null) {
+			this.socket = socket;
+			this.vec = vec;
+		}
+		// Otherwise, the thread is interrupted!
+		else {
+			System.out.println("Invalid!");
+			this.interrupt();
+		}
 	}
 	public void run(){
+		// To distinguish which client it is when running multiple threads.
+		String clientInfo = "[" + socket.getInetAddress() + ":" + socket.getPort() + "]";
+
 		BufferedReader reader = null;
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			// Print the message that successfully connected with Client.
+			System.out.println(clientInfo + " - Connection to Client successful.");
+			
 			String string = null;
 			while(true)
 			{
@@ -29,14 +43,14 @@ class EchoThread extends Thread{
 				}
 				if(string.equals("!p"))
 				{
-					broadcast("¸¶ÇÇ¾Æ °ÔÀÓÀ» ½ÃÀÛÇÕ´Ï´Ù!");
+					broadcast("ë§ˆí”¼ì•„ ê²Œì„ì„ ì‹œì‘í•©ë‹ˆë‹¤!");
 				}
 				else
 				{
 					sending(string);	
 				}
 			}
-			
+
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());
 		}finally{
@@ -48,13 +62,13 @@ class EchoThread extends Thread{
 			}
 		}
 	}
-	
-	//Àü¼Û¹ŞÀº ¹®ÀÚ¿­ ´Ù¸¥ Å¬¶óÀÌ¾ğÆ®µé¿¡°Ô º¸³»ÁÖ´Â ¸Ş¼­µå
+
+	//ì „ì†¡ë°›ì€ ë¬¸ìì—´ ë‹¤ë¥¸ í´ë¼ì´ì–¸íŠ¸ë“¤ì—ê²Œ ë³´ë‚´ì£¼ëŠ” ë©”ì„œë“œ
 	public void sending(String str){
 		try{
 			for(Socket socket:vec){
-				//for¸¦ µ¹µÇ ÇöÀçÀÇ socketÀÌ µ¥ÀÌÅÍ¸¦ º¸³½ Å¬¶óÀÌ¾ğÆ®ÀÎ °æ¿ì¸¦ Á¦¿ÜÇÏ°í 
-				//³ª¸ÓÁö socketµé¿¡°Ô¸¸ µ¥ÀÌÅÍ¸¦ º¸³½´Ù.
+				//forë¥¼ ëŒë˜ í˜„ì¬ì˜ socketì´ ë°ì´í„°ë¥¼ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì¸ ê²½ìš°ë¥¼ ì œì™¸í•˜ê³  
+				//ë‚˜ë¨¸ì§€ socketë“¤ì—ê²Œë§Œ ë°ì´í„°ë¥¼ ë³´ë‚¸ë‹¤.
 				if(socket != this.socket){
 					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 					writer.println(str);
@@ -67,15 +81,15 @@ class EchoThread extends Thread{
 	}
 	public void broadcast(String start) {
 		synchronized(vec) {
-		try{
-			for(Socket socket:vec){
-				PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-				writer.println(start);
-				writer.flush();	
+			try{
+				for(Socket socket:vec){
+					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+					writer.println(start);
+					writer.flush();	
+				}
+			}catch(IOException ie){
+				System.out.println(ie.getMessage());
 			}
-		}catch(IOException ie){
-			System.out.println(ie.getMessage());
-		}
 		}
 	}
 }
@@ -95,6 +109,14 @@ public class ChatServer {
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());
+		} finally {
+			// Close sockets.
+			try {
+				if (socket != null) socket.close();
+				if (server != null) server.close();
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 }

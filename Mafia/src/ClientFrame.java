@@ -13,19 +13,19 @@ import javax.swing.JTextField;
 
 class Id extends JFrame implements ActionListener{
 	static JTextField textField = new JTextField(8);
-	JButton button = new JButton("ÀÔ·Â");	
+	JButton button = new JButton("ì…ë ¥");	
 	
 	WritingThread writing;	
 	ClientFrame client;
 
 	public Id(WritingThread writing, ClientFrame client) {
-		super("´Ğ³×ÀÓ");		
+		super("ë‹‰ë„¤ì„");		
 		this.writing = writing;
 		this.client = client;
 		
 		
 		setLayout(new FlowLayout());
-		add(new JLabel("´Ğ³×ÀÓ"));
+		add(new JLabel("ë‹‰ë„¤ì„"));
 		add(textField);
 		add(button);
 		
@@ -52,8 +52,8 @@ class Id extends JFrame implements ActionListener{
 public class ClientFrame extends JFrame implements ActionListener{
 	JTextArea textArea = new JTextArea();
 	JTextField textField = new JTextField(15);
-	JButton button_1 = new JButton("Àü¼Û");
-	JButton button_2 = new JButton("´İ±â");
+	JButton button_1 = new JButton("ì „ì†¡");
+	JButton button_2 = new JButton("ë‹«ê¸°");
 	boolean isFirst=true;
 	JPanel panel = new JPanel();
 	Socket socket;
@@ -76,7 +76,7 @@ public class ClientFrame extends JFrame implements ActionListener{
 		panel.add(button_2);
 		getContentPane().add(panel);
 		
-		//¸Ş¼¼Áö¸¦ Àü¼ÛÇÏ´Â Å¬·¡½º »ı¼º.
+		//ë©”ì„¸ì§€ë¥¼ ì „ì†¡í•˜ëŠ” í´ë˜ìŠ¤ ìƒì„±.
 		
 		button_1.addActionListener(this);
 		button_2.addActionListener(this);
