@@ -44,6 +44,8 @@ class EchoThread extends Thread{
 				if(string.equals("!p"))
 				{
 					broadcast("마피아 게임을 시작합니다!");
+					Game game = new Game(socket, vec);
+					game.start();
 				}
 				else
 				{
@@ -94,6 +96,82 @@ class EchoThread extends Thread{
 	}
 }
 
+/**
+ * 직업 랜덤 부여 기능의 결과가 어떻게 될지 몰라서 미완.
+ * mafia가 다수인 경우 Vector에 마피아를 부여받은 쓰레드만 저장해서 할 경우로 가정해서 일단 구현함.
+ */
+class MafiaThread extends Thread {
+	Socket socket;
+	Vector<Socket> mafia;
+	
+	public MafiaThread(Socket socket, Vector<Socket> mafia){
+		// If Socket and Vector are correct, set it to value.
+		if (socket != null && mafia != null) {
+			this.socket = socket;
+			this.mafia = mafia;
+		}
+		// Otherwise, the thread is interrupted!
+		else {
+			System.out.println("Invalid!");
+			this.interrupt();
+		}
+	}
+	
+	public void run(){
+		BufferedReader reader = null;
+		try{
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			
+			String string = null;
+			while(true)
+			{
+				string = reader.readLine();
+				if(string == null)
+				{
+					mafia.remove(socket);
+					break;
+				}
+				else if (string.equals("!k")) {
+					string = reader.readLine();
+					kill(string);
+				}
+				else
+					secret(string);
+			}
+
+		}catch(IOException ie){
+			System.out.println(ie.getMessage());
+		}finally{
+			try{
+				if(reader != null) reader.close();
+				if(socket != null) socket.close();
+			}catch(IOException ie){
+				System.out.println(ie.getMessage());
+			}
+		}
+	}
+	
+	// 마피아들끼리 대화. 서로에게만 전송됨.
+	public void secret(String start) {
+		synchronized(mafia) {
+			try{
+				for(Socket socket:mafia){
+					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+					writer.println(start);
+					writer.flush();	
+				}
+			}catch(IOException ie){
+				System.out.println(ie.getMessage());
+			}
+		}
+	}
+	
+	public void kill(String killed) {
+		/**
+		 * 투표
+		 */
+	}
+}
 
 public class ChatServer {
 	public static void main(String[] args) {
@@ -102,6 +180,8 @@ public class ChatServer {
 		Vector<Socket> vec = new Vector<Socket>();
 		try{
 			server= new ServerSocket(3000);
+			System.out.println("The server is running...");
+			
 			while(true){
 				socket = server.accept();
 				vec.add(socket);
