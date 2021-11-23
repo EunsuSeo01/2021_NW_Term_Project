@@ -9,23 +9,28 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import java.awt.TextField;
+import java.awt.Scrollbar;
+import javax.swing.JScrollPane;
+import java.awt.ScrollPane;
+import java.awt.TextArea;
 
 
 class Id extends JFrame implements ActionListener{
 	static JTextField textField = new JTextField(8);
-	JButton button = new JButton("ì…ë ¥");	
+	JButton button = new JButton("ÀÔ·Â");	
 	
 	WritingThread writing;	
 	ClientFrame client;
 
 	public Id(WritingThread writing, ClientFrame client) {
-		super("ë‹‰ë„¤ì„");		
+		super("´Ğ³×ÀÓ");		
 		this.writing = writing;
 		this.client = client;
 		
 		
 		setLayout(new FlowLayout());
-		add(new JLabel("ë‹‰ë„¤ì„"));
+		add(new JLabel("´Ğ³×ÀÓ"));
 		add(textField);
 		add(button);
 		
@@ -50,10 +55,10 @@ class Id extends JFrame implements ActionListener{
 
 
 public class ClientFrame extends JFrame implements ActionListener{
-	JTextArea textArea = new JTextArea();
-	JTextField textField = new JTextField(15);
-	JButton button_1 = new JButton("ì „ì†¡");
-	JButton button_2 = new JButton("ë‹«ê¸°");
+	TextArea textArea = new TextArea();
+	JTextField textField = new JTextField(20);
+	JButton button_1 = new JButton("Àü¼Û");
+	JButton button_2 = new JButton("´İ±â");
 	boolean isFirst=true;
 	JPanel panel = new JPanel();
 	Socket socket;
@@ -76,7 +81,7 @@ public class ClientFrame extends JFrame implements ActionListener{
 		panel.add(button_2);
 		getContentPane().add(panel);
 		
-		//ë©”ì„¸ì§€ë¥¼ ì „ì†¡í•˜ëŠ” í´ë˜ìŠ¤ ìƒì„±.
+		//¸Ş¼¼Áö¸¦ Àü¼ÛÇÏ´Â Å¬·¡½º »ı¼º.
 		
 		button_1.addActionListener(this);
 		button_2.addActionListener(this);

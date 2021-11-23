@@ -1,4 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -6,11 +9,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
-
 class EchoThread extends Thread{
+	int currentClient = 0;
 	Socket socket;
 	Vector<Socket> vec;
-	public EchoThread(Socket socket, Vector<Socket> vec){
+	public EchoThread(Socket socket, Vector<Socket> vec)
+	{
 		// If Socket and Vector are correct, set it to value.
 		if (socket != null && vec != null) {
 			this.socket = socket;
@@ -22,17 +26,27 @@ class EchoThread extends Thread{
 			this.interrupt();
 		}
 	}
-	public void run(){
+	public void run()
+	{
 		// To distinguish which client it is when running multiple threads.
 		String clientInfo = "[" + socket.getInetAddress() + ":" + socket.getPort() + "]";
-
 		BufferedReader reader = null;
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			// Print the message that successfully connected with Client.
 			System.out.println(clientInfo + " - Connection to Client successful.");
 			
+			File file = new File("clientInfo.txt");
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+			 if(file.isFile() && file.canWrite())
+			 {
+	                bufferedWriter.write(socket.getPort() + " 0" + " 0" + " 0");
+	                bufferedWriter.newLine();
+	                bufferedWriter.close();
+	                currentClient++;
+			 }
 			String string = null;
+			
 			while(true)
 			{
 				string = reader.readLine();
@@ -41,11 +55,15 @@ class EchoThread extends Thread{
 					vec.remove(socket);
 					break;
 				}
-				if(string.equals("!p"))
+				if(string.equals("!p") && currentClient >= 4 && currentClient <= 8)
 				{
-					broadcast("ë§ˆí”¼ì•„ ê²Œì„ì„ ì‹œì‘í•©ë‹ˆë‹¤!");
+					broadcast("¸¶ÇÇ¾Æ °ÔÀÓÀ» ½ÃÀÛÇÕ´Ï´Ù!");
 					Game game = new Game(socket, vec);
 					game.start();
+				}
+				else if(string.equals("!p") && currentClient < 4 && currentClient > 8)
+				{
+					broadcast("ÀÎ¿øÀÌ ³Ê¹« Àû°Å³ª ¸¹½À´Ï´Ù!");
 				}
 				else
 				{
@@ -65,12 +83,12 @@ class EchoThread extends Thread{
 		}
 	}
 
-	//ì „ì†¡ë°›ì€ ë¬¸ìì—´ ë‹¤ë¥¸ í´ë¼ì´ì–¸íŠ¸ë“¤ì—ê²Œ ë³´ë‚´ì£¼ëŠ” ë©”ì„œë“œ
+	//Àü¼Û¹ŞÀº ¹®ÀÚ¿­ ´Ù¸¥ Å¬¶óÀÌ¾ğÆ®µé¿¡°Ô º¸³»ÁÖ´Â ¸Ş¼­µå
 	public void sending(String str){
 		try{
 			for(Socket socket:vec){
-				//forë¥¼ ëŒë˜ í˜„ì¬ì˜ socketì´ ë°ì´í„°ë¥¼ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì¸ ê²½ìš°ë¥¼ ì œì™¸í•˜ê³  
-				//ë‚˜ë¨¸ì§€ socketë“¤ì—ê²Œë§Œ ë°ì´í„°ë¥¼ ë³´ë‚¸ë‹¤.
+				//for¸¦ µ¹µÇ ÇöÀçÀÇ socketÀÌ µ¥ÀÌÅÍ¸¦ º¸³½ Å¬¶óÀÌ¾ğÆ®ÀÎ °æ¿ì¸¦ Á¦¿ÜÇÏ°í 
+				//³ª¸ÓÁö socketµé¿¡°Ô¸¸ µ¥ÀÌÅÍ¸¦ º¸³½´Ù.
 				if(socket != this.socket){
 					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 					writer.println(str);
@@ -97,8 +115,8 @@ class EchoThread extends Thread{
 }
 
 /**
- * ì§ì—… ëœë¤ ë¶€ì—¬ ê¸°ëŠ¥ì˜ ê²°ê³¼ê°€ ì–´ë–»ê²Œ ë ì§€ ëª°ë¼ì„œ ë¯¸ì™„.
- * mafiaê°€ ë‹¤ìˆ˜ì¸ ê²½ìš° Vectorì— ë§ˆí”¼ì•„ë¥¼ ë¶€ì—¬ë°›ì€ ì“°ë ˆë“œë§Œ ì €ì¥í•´ì„œ í•  ê²½ìš°ë¡œ ê°€ì •í•´ì„œ ì¼ë‹¨ êµ¬í˜„í•¨.
+ * Á÷¾÷ ·£´ı ºÎ¿© ±â´ÉÀÇ °á°ú°¡ ¾î¶»°Ô µÉÁö ¸ô¶ó¼­ ¹Ì¿Ï.
+ * mafia°¡ ´Ù¼öÀÎ °æ¿ì Vector¿¡ ¸¶ÇÇ¾Æ¸¦ ºÎ¿©¹ŞÀº ¾²·¹µå¸¸ ÀúÀåÇØ¼­ ÇÒ °æ¿ì·Î °¡Á¤ÇØ¼­ ÀÏ´Ü ±¸ÇöÇÔ.
  */
 class MafiaThread extends Thread {
 	Socket socket;
@@ -151,7 +169,7 @@ class MafiaThread extends Thread {
 		}
 	}
 	
-	// ë§ˆí”¼ì•„ë“¤ë¼ë¦¬ ëŒ€í™”. ì„œë¡œì—ê²Œë§Œ ì „ì†¡ë¨.
+	// ¸¶ÇÇ¾Æµé³¢¸® ´ëÈ­. ¼­·Î¿¡°Ô¸¸ Àü¼ÛµÊ.
 	public void secret(String start) {
 		synchronized(mafia) {
 			try{
@@ -168,7 +186,7 @@ class MafiaThread extends Thread {
 	
 	public void kill(String killed) {
 		/**
-		 * íˆ¬í‘œ
+		 * ÅõÇ¥
 		 */
 	}
 }
