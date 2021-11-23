@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,12 +14,13 @@ class EchoThread extends Thread{
 	int currentClient = 0;
 	Socket socket;
 	Vector<Socket> vec;
-	public EchoThread(Socket socket, Vector<Socket> vec)
+	public EchoThread(Socket socket, Vector<Socket> vec,int currentClient)
 	{
 		// If Socket and Vector are correct, set it to value.
 		if (socket != null && vec != null) {
 			this.socket = socket;
 			this.vec = vec;
+			this.currentClient = currentClient;
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -34,34 +36,38 @@ class EchoThread extends Thread{
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			// Print the message that successfully connected with Client.
+			
 			System.out.println(clientInfo + " - Connection to Client successful.");
 			
 			File file = new File("clientInfo.txt");
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+			
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)); //파일을 새로만들지 않고 이어쓴다	
+			
+        	
 			 if(file.isFile() && file.canWrite())
 			 {
-	                bufferedWriter.write(socket.getPort() + " 0" + " 0" + " 0");
+	                bufferedWriter.write(currentClient + " 0" + " 0" + " 0");
 	                bufferedWriter.newLine();
 	                bufferedWriter.close();
-	                currentClient++;
 			 }
 			String string = null;
 			
 			while(true)
 			{
 				string = reader.readLine();
+				System.out.println(string);
 				if(string == null)
 				{
 					vec.remove(socket);
 					break;
 				}
-				if(string.equals("!p") && currentClient >= 4 && currentClient <= 8)
+				if(string.equals("/p") && currentClient >= 4 && currentClient <= 8)
 				{
 					broadcast("마피아 게임을 시작합니다!");
-					Game game = new Game(socket, vec);
+					Game game = new Game(socket, vec,currentClient);
 					game.start();
 				}
-				else if(string.equals("!p") && currentClient < 4 && currentClient > 8)
+				else if(string.equals("/p") && currentClient < 4 && currentClient > 8)
 				{
 					broadcast("인원이 너무 적거나 많습니다!");
 				}
@@ -99,6 +105,7 @@ class EchoThread extends Thread{
 			System.out.println(ie.getMessage());
 		}
 	}
+	
 	public void broadcast(String start) {
 		synchronized(vec) {
 			try{
@@ -195,15 +202,16 @@ public class ChatServer {
 	public static void main(String[] args) {
 		ServerSocket server = null;
 		Socket socket =null;
+		int currentClient = 1;
 		Vector<Socket> vec = new Vector<Socket>();
 		try{
 			server= new ServerSocket(3000);
 			System.out.println("The server is running...");
-			
 			while(true){
 				socket = server.accept();
 				vec.add(socket);
-				new EchoThread(socket, vec).start();
+				new EchoThread(socket, vec,currentClient).start();
+				currentClient++;
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());

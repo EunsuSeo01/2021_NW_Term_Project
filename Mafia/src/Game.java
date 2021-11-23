@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,38 +7,40 @@ import java.net.Socket;
 import java.util.*;
 
 /**
- * ì „ì²´ì ì¸ ê²Œì„ì´ ì§„í–‰ë˜ëŠ” í´ë˜ìŠ¤.
- * í˜„ì¬ - ê²Œì„ ì´ˆê¸°í™” & íƒ€ì´ë¨¸ ê¸°ëŠ¥ êµ¬í˜„.
+ * ÀüÃ¼ÀûÀÎ °ÔÀÓÀÌ ÁøÇàµÇ´Â Å¬·¡½º.
+ * ÇöÀç - °ÔÀÓ ÃÊ±âÈ­ & Å¸ÀÌ¸Ó ±â´É ±¸Çö.
  */
 public class Game {
+	int currentClient;
 	Socket socket;
 	Vector<Socket> player;
-	int survivorNum;	// ìƒì¡´ì ìˆ˜
-	int deadNum;	// ì£½ì€ ì‚¬ëŒ ìˆ˜
+	int survivorNum;	// »ıÁ¸ÀÚ ¼ö
+	int deadNum;	// Á×Àº »ç¶÷ ¼ö
 	long daytime;
 	long night;
 	int voteTime;
 	
-	public Game(Socket socket, Vector<Socket> player) {
+	public Game(Socket socket, Vector<Socket> player,int currentClient) {
 		this.socket = socket;
 		this.player = player;
+		this.currentClient = currentClient;
 	}
 
 	private void set() {
 		survivorNum = player.size();
 		deadNum = 0;
-		daytime = survivorNum * 15000;	// ë‚® ì‹œê°„ (ìƒì¡´ììˆ˜*15ì´ˆ)
-		voteTime = 15000;	// ë°¤ ì‹œê°„ (= íˆ¬í‘œì‹œê°„ 15ì´ˆ)
+		daytime = survivorNum * 15000;	// ³· ½Ã°£ (»ıÁ¸ÀÚ¼ö*15ÃÊ)
+		voteTime = 15000;	// ¹ã ½Ã°£ (= ÅõÇ¥½Ã°£ 15ÃÊ)
 	}
 
 	public void start() {
 		set();
-		EchoThread et = new EchoThread(socket, player);
+		EchoThread et = new EchoThread(socket, player, currentClient);
 		Timer daytimeTimer = new Timer();
 		TimerTask daytimeTask = new TimerTask(){
 			@Override
 			public void run() {
-				et.broadcast("ë‚®ì´ ë˜ì—ˆìŠµë‹ˆë‹¤. í† ë¡ ì„ ì‹œì‘í•˜ì„¸ìš”.");
+				et.broadcast("³·ÀÌ µÇ¾ú½À´Ï´Ù. Åä·ĞÀ» ½ÃÀÛÇÏ¼¼¿ä.");
 			}
 		};
 
@@ -47,35 +50,35 @@ public class Game {
 		TimerTask nightTimeTask = new TimerTask() {
 			@Override
 			public void run() {
-				et.broadcast("ë°¤ì´ ë˜ì—ˆìŠµë‹ˆë‹¤. íˆ¬í‘œë¥¼ ì§„í–‰í•´ì£¼ì„¸ìš”.");
+				et.broadcast("¹ãÀÌ µÇ¾ú½À´Ï´Ù. ÅõÇ¥¸¦ ÁøÇàÇØÁÖ¼¼¿ä.");
 			}
 		};
 		
 		nightTimer.schedule(nightTimeTask, daytime, daytime + night + voteTime);		
 	}
 	
-	//vote ë©”ì†Œë“œ
-	public void vote() {//í…ŒìŠ¤íŠ¸ìš©
+	//vote ¸Ş¼Òµå
+	public void vote() {//Å×½ºÆ®¿ë
 		
 	}
 
 	/**
-	 * ì§ì—… ëœë¤ ì„¤ì • ê¸°ëŠ¥. -> ë¯¼ì„œë‹˜
+	 * Á÷¾÷ ·£´ı ¼³Á¤ ±â´É. -> ¹Î¼­´Ô
 	 */
 
 	/**
-	 * íˆ¬í‘œ ê¸°ëŠ¥. -> íš¨ì˜ë‹˜
+	 * ÅõÇ¥ ±â´É. -> È¿¿µ´Ô
 	 */
 
 	/**
-	 * ì§ì—…ë³„ ëŠ¥ë ¥ ì‚¬ìš© ê¸°ëŠ¥. -> protocol ì‚¬ìš©. ì˜ˆ) !heal nickname
+	 * Á÷¾÷º° ´É·Â »ç¿ë ±â´É. -> protocol »ç¿ë. ¿¹) !heal nickname
 	 */
 	
 	/**
-	 * ìŠ¹ë¦¬
+	 * ½Â¸®
 	 */
 	
 	/**
-	 * íŒ¨ë°°
+	 * ÆĞ¹è
 	 */
 }

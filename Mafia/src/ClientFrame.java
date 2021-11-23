@@ -56,7 +56,7 @@ class Id extends JFrame implements ActionListener{
 
 public class ClientFrame extends JFrame implements ActionListener{
 	TextArea textArea = new TextArea();
-	JTextField textField = new JTextField(20);
+	JTextField textField = new JTextField(15);
 	JButton button_1 = new JButton("Àü¼Û");
 	JButton button_2 = new JButton("´Ý±â");
 	boolean isFirst=true;

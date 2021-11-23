@@ -26,13 +26,14 @@ class WritingThread{
 				InetAddress address = socket.getLocalAddress();				
 				String ip = address.getHostAddress();				
 				getId();
-				str = "["+nickname+"] Enter this room ("+ip+")"; 
+				str = "*****"+"["+nickname+"] enter this room"+"*****"; 
 				writer.println(str);
 			}
-			else if(client.textField.getText().equals("!p"))// protocol
+			else if(client.textField.getText().equals("/p"))// protocol
 			{
-				str = client.textField.getText();
-				writer.println(str);
+				str = "/p";
+				System.out.println(str);
+				writer.print(str);
 			}
 			else
 			{
