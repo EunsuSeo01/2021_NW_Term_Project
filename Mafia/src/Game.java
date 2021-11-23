@@ -54,6 +54,10 @@ public class Game {
 		nightTimer.schedule(nightTimeTask, daytime, daytime + night + voteTime);		
 	}
 	
+	//vote 메소드
+	public void vote() {
+		
+	}
 
 	/**
 	 * 직업 랜덤 설정 기능. -> 민서님
