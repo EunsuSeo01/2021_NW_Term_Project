@@ -55,7 +55,7 @@ public class Game {
 	}
 	
 	//vote 메소드
-	public void vote() {
+	public void vote() {//테스트용
 		
 	}
 
