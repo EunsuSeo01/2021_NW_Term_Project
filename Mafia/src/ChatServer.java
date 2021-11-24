@@ -11,16 +11,16 @@ import java.net.Socket;
 import java.util.Vector;
 
 class EchoThread extends Thread{
-	int currentClient = 0;
 	Socket socket;
 	Vector<Socket> vec;
-	public EchoThread(Socket socket, Vector<Socket> vec,int currentClient)
+	int currentClient;
+	public EchoThread(Socket socket, Vector<Socket> vec)
 	{
 		// If Socket and Vector are correct, set it to value.
 		if (socket != null && vec != null) {
 			this.socket = socket;
 			this.vec = vec;
-			this.currentClient = currentClient;
+			currentClient = vec.size();
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -50,24 +50,26 @@ class EchoThread extends Thread{
 	                bufferedWriter.newLine();
 	                bufferedWriter.close();
 			 }
+			 //test -> 누군가 종료했을 때는 반영되지 않음..
+			 System.out.println("currentClient: "+ currentClient);
 			String string = null;
 			
 			while(true)
 			{
 				string = reader.readLine();
-				System.out.println(string);
+				System.out.println("Server" + string);
 				if(string == null)
 				{
 					vec.remove(socket);
 					break;
 				}
-				if(string.equals("/p") && currentClient >= 4 && currentClient <= 8)
+				if(string.equals("/p") && vec.size() >= 4 && vec.size() <= 8)
 				{
 					broadcast("마피아 게임을 시작합니다!");
-					Game game = new Game(socket, vec,currentClient);
+					Game game = new Game(socket, vec);
 					game.start();
 				}
-				else if(string.equals("/p") && currentClient < 4 && currentClient > 8)
+				else if(string.equals("/p") && vec.size() < 4 && vec.size() > 8)
 				{
 					broadcast("인원이 너무 적거나 많습니다!");
 				}
@@ -97,6 +99,7 @@ class EchoThread extends Thread{
 				//나머지 socket들에게만 데이터를 보낸다.
 				if(socket != this.socket){
 					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+					System.out.println("sending");
 					writer.println(str);
 					writer.flush();
 				}
@@ -202,7 +205,6 @@ public class ChatServer {
 	public static void main(String[] args) {
 		ServerSocket server = null;
 		Socket socket =null;
-		int currentClient = 1;
 		Vector<Socket> vec = new Vector<Socket>();
 		try{
 			server= new ServerSocket(3000);
@@ -210,8 +212,7 @@ public class ChatServer {
 			while(true){
 				socket = server.accept();
 				vec.add(socket);
-				new EchoThread(socket, vec,currentClient).start();
-				currentClient++;
+				new EchoThread(socket, vec).start();
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());

@@ -28,17 +28,20 @@ class WritingThread{
 				getId();
 				str = "*****"+"["+nickname+"] enter this room"+"*****"; 
 				writer.println(str);
+				writer.flush();
 			}
 			else if(client.textField.getText().equals("/p"))// protocol
 			{
-				str = "/p";
+				str = client.textField.getText();
 				System.out.println(str);
-				writer.print(str);
+				writer.println(str);
+				writer.flush();
 			}
 			else
 			{
 				str= "["+nickname+"] "+client.textField.getText();
 				writer.println(str);
+				writer.flush();
 			}
 		
 		}catch(IOException ie){
@@ -101,15 +104,4 @@ public class ChatClient {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 

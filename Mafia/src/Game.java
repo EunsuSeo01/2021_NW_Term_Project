@@ -11,7 +11,6 @@ import java.util.*;
  * 현재 - 게임 초기화 & 타이머 기능 구현.
  */
 public class Game {
-	int currentClient;
 	Socket socket;
 	Vector<Socket> player;
 	int survivorNum;	// 생존자 수
@@ -20,14 +19,13 @@ public class Game {
 	long night;
 	int voteTime;
 	
-	public Game(Socket socket, Vector<Socket> player,int currentClient) {
+	public Game(Socket socket, Vector<Socket> player) {
 		this.socket = socket;
 		this.player = player;
-		this.currentClient = currentClient;
 	}
 
 	private void set() {
-		survivorNum = player.size();
+		survivorNum = player.size();	// 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
 		deadNum = 0;
 		daytime = survivorNum * 15000;	// 낮 시간 (생존자수*15초)
 		voteTime = 15000;	// 밤 시간 (= 투표시간 15초)
@@ -35,7 +33,7 @@ public class Game {
 
 	public void start() {
 		set();
-		EchoThread et = new EchoThread(socket, player, currentClient);
+		EchoThread et = new EchoThread(socket, player);
 		Timer daytimeTimer = new Timer();
 		TimerTask daytimeTask = new TimerTask(){
 			@Override
