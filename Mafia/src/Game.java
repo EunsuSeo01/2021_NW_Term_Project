@@ -41,22 +41,34 @@ public class Game {
 				et.broadcast("낮이 되었습니다. 토론을 시작하세요.");
 			}
 		};
-
-		daytimeTimer.schedule(daytimeTask, 0, daytime + night + voteTime);
+		
+		Timer votetimeTimer = new Timer();
+		TimerTask votetimeTask = new TimerTask(){
+			@Override
+			public void run() {
+				et.broadcast("투표를 시작니합니다");
+			    //vote();
+			}
+		};
 		
 		Timer nightTimer = new Timer();
 		TimerTask nightTimeTask = new TimerTask() {
 			@Override
 			public void run() {
-				et.broadcast("밤이 되었습니다. 투표를 진행해주세요.");
+				et.broadcast("밤이 되었습니다. 마피아들은 죽일사람을 골라주세요");
 			}
 		};
+
+		daytimeTimer.schedule(daytimeTask, 0, daytime + night + voteTime);	
+		votetimeTimer.schedule(votetimeTask, daytime, daytime + night + voteTime);		
+		nightTimer.schedule(nightTimeTask, daytime+voteTime, daytime + night + voteTime);
 		
-		nightTimer.schedule(nightTimeTask, daytime, daytime + night + voteTime);		
 	}
 	
 	//vote 메소드
 	public void vote() {//테스트용
+		
+		
 		
 	}
 
