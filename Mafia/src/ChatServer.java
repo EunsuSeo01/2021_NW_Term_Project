@@ -69,7 +69,7 @@ class EchoThread extends Thread{
 					Game game = new Game(socket, vec);
 					game.start();
 				}
-				else if(string.equals("/p") && vec.size() < 4 && vec.size() > 8)
+				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
 				{
 					broadcast("인원이 너무 적거나 많습니다!");
 				}
