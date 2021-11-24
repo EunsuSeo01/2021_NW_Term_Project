@@ -15,8 +15,8 @@ public class Game {
 	Vector<Socket> player;
 	int survivorNum;	// 생존자 수
 	int deadNum;	// 죽은 사람 수
-	long daytime;
-	long night;
+	long dayTime;
+	long nightTime;
 	int voteTime;
 	
 	public Game(Socket socket, Vector<Socket> player) {
@@ -27,8 +27,9 @@ public class Game {
 	private void set() {
 		survivorNum = player.size();	// 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
 		deadNum = 0;
-		daytime = survivorNum * 15000;	// 낮 시간 (생존자수*15초)
-		voteTime = 15000;	// 밤 시간 (= 투표시간 15초)
+		dayTime = survivorNum * 1000;	// 낮 시간 (생존자수*15초)
+		nightTime = survivorNum * 1000; // 밤 시간 (생존자수*15초)
+		voteTime = 15000;	//  투표시간 15초
 	}
 
 	public void start() {
@@ -38,7 +39,7 @@ public class Game {
 		TimerTask daytimeTask = new TimerTask(){
 			@Override
 			public void run() {
-				et.broadcast("낮이 되었습니다. 토론을 시작하세요.");
+				et.broadcast("<System> 낮이 되었습니다. 토론을 시작하세요.");
 			}
 		};
 		
@@ -46,7 +47,7 @@ public class Game {
 		TimerTask votetimeTask = new TimerTask(){
 			@Override
 			public void run() {
-				et.broadcast("투표를 시작니합니다");
+				et.broadcast("<System> 투표를 시작합니다");
 			    //vote();
 			}
 		};
@@ -55,13 +56,13 @@ public class Game {
 		TimerTask nightTimeTask = new TimerTask() {
 			@Override
 			public void run() {
-				et.broadcast("밤이 되었습니다. 마피아들은 죽일사람을 골라주세요");
+				et.broadcast("<System> 밤이 되었습니다. 투표를 시작합니다");
 			}
 		};
 
-		daytimeTimer.schedule(daytimeTask, 0, daytime + night + voteTime);	
-		votetimeTimer.schedule(votetimeTask, daytime, daytime + night + voteTime);		
-		nightTimer.schedule(nightTimeTask, daytime+voteTime, daytime + night + voteTime);
+		daytimeTimer.schedule(daytimeTask, 0, dayTime + nightTime + voteTime);	
+		votetimeTimer.schedule(votetimeTask, dayTime, dayTime + nightTime + voteTime);		
+		nightTimer.schedule(nightTimeTask,dayTime + voteTime, dayTime + nightTime + voteTime);
 		
 	}
 	
