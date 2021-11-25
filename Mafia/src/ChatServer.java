@@ -8,19 +8,23 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 
 class EchoThread extends Thread{
 	Socket socket;
 	Vector<Socket> vec;
 	int currentClient;
-	public EchoThread(Socket socket, Vector<Socket> vec)
+	ArrayList<Integer> indexList;
+	
+	public EchoThread(Socket socket, Vector<Socket> vec, ArrayList<Integer> indexList)
 	{
 		// If Socket and Vector are correct, set it to value.
 		if (socket != null && vec != null) {
 			this.socket = socket;
 			this.vec = vec;
 			currentClient = vec.size();
+			this.indexList = indexList;
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -52,6 +56,7 @@ class EchoThread extends Thread{
 			 }
 			 //test -> 누군가 종료했을 때는 반영되지 않음..
 			 System.out.println("currentClient: "+ currentClient);
+			 
 			String string = null;
 			
 			while(true)
@@ -66,7 +71,10 @@ class EchoThread extends Thread{
 				if(string.equals("/p") && vec.size() >= 4 && vec.size() <= 8)
 				{
 					broadcast("마피아 게임을 시작합니다!");
-					Game game = new Game(socket, vec);
+					// Test
+					for (int i = 0; i < indexList.size(); i++)
+						System.out.println("index:" + indexList.get(i));
+					Game game = new Game(socket, vec, indexList);
 					game.start();
 				}
 				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
@@ -205,14 +213,20 @@ public class ChatServer {
 	public static void main(String[] args) {
 		ServerSocket server = null;
 		Socket socket =null;
+		int num = 0;
+		// Socket을 배열로 저장하기 위해 선언한 vec.
 		Vector<Socket> vec = new Vector<Socket>();
+		// Thread들의 인덱스를 저장하기 위해, 즉 Thread를 특정할 때 사용하기 위해 선언한 indexList.
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		try{
 			server= new ServerSocket(3000);
 			System.out.println("The server is running...");
 			while(true){
 				socket = server.accept();
 				vec.add(socket);
-				new EchoThread(socket, vec).start();
+				indexList.add(num);
+				num++;	// 인덱스 하나씩 올리는 방식으로.
+				new EchoThread(socket, vec, indexList).start();
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());

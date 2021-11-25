@@ -22,13 +22,15 @@ public class Game {
    Vector<Socket> player;
    int survivorNum;   // 생존자 수
    int deadNum;   // 죽은 사람 수
+   ArrayList<Integer> indexList;	// 쓰레드의 인덱스를 저장하고 있는 배열.
    long dayTime;
    long nightTime;
    int voteTime;
    
-   public Game(Socket socket, Vector<Socket> player) {
+   public Game(Socket socket, Vector<Socket> player, ArrayList<Integer> indexList) {
       this.socket = socket;
       this.player = player;
+      this.indexList = indexList;
    }
 
    private void set() {
@@ -42,7 +44,10 @@ public class Game {
    public void start() throws IOException {
       set();
       setRoles();
-      EchoThread et = new EchoThread(socket, player);
+      // Test
+      for (int i = 0; i < indexList.size(); i++)
+			System.out.println("In Game class, index:" + indexList.get(i));
+      EchoThread et = new EchoThread(socket, player, indexList);
       Timer daytimeTimer = new Timer();
       TimerTask daytimeTask = new TimerTask(){
          @Override
@@ -112,7 +117,7 @@ public class Game {
             rand(roles,playernum);
             
             for(int i=0;i<playernum;i++) {
-            System.out.println(roles[i]);
+            System.out.println("roles:" + roles[i]);
             }
       
       File file = new File("clientInfo.txt");
