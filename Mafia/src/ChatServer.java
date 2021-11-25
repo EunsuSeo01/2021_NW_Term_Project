@@ -17,14 +17,14 @@ class EchoThread extends Thread{
 	int currentClient;
 	ArrayList<Integer> indexList;
 	
-	public EchoThread(Socket socket, Vector<Socket> vec, ArrayList<Integer> indexList)
+	public EchoThread(Socket socket, Vector<Socket> vec)
 	{
 		// If Socket and Vector are correct, set it to value.
 		if (socket != null && vec != null) {
 			this.socket = socket;
 			this.vec = vec;
 			currentClient = vec.size();
-			this.indexList = indexList;
+		
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -72,9 +72,8 @@ class EchoThread extends Thread{
 				{
 					broadcast("마피아 게임을 시작합니다!");
 					// Test
-					for (int i = 0; i < indexList.size(); i++)
-						System.out.println("index:" + indexList.get(i));
-					Game game = new Game(socket, vec, indexList);
+
+					Game game = new Game(socket, vec);
 					game.start();
 				}
 				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
@@ -226,7 +225,7 @@ public class ChatServer {
 				vec.add(socket);
 				indexList.add(num);
 				num++;	// 인덱스 하나씩 올리는 방식으로.
-				new EchoThread(socket, vec, indexList).start();
+				new EchoThread(socket, vec).start();
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());
