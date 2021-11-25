@@ -14,16 +14,19 @@ import java.util.Vector;
 class EchoThread extends Thread{
 	Socket socket;
 	Vector<Socket> vec;
-	int currentClient;
-	ArrayList<Integer> indexList;
+	int currentClient;;
+	int playerID = 1;//게임진행시 필요한 플레이어 식별번호
 	
-	public EchoThread(Socket socket, Vector<Socket> vec)
+	public EchoThread(Socket socket, Vector<Socket> vec, int playerID)
 	{
 		// If Socket and Vector are correct, set it to value.
 		if (socket != null && vec != null) {
 			this.socket = socket;
 			this.vec = vec;
 			currentClient = vec.size();
+			this.playerID = playerID;
+
+
 		
 		}
 		// Otherwise, the thread is interrupted!
@@ -72,9 +75,12 @@ class EchoThread extends Thread{
 				{
 					broadcast("마피아 게임을 시작합니다!");
 					// Test
-
-					Game game = new Game(socket, vec);
-					game.start();
+					
+					for(int i=0; i< vec.size(); i++) {
+					 Game game = new Game(vec.get(i), vec, playerID);
+					 playerID++;
+					 game.start();
+					}
 				}
 				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
 				{
@@ -212,20 +218,19 @@ public class ChatServer {
 	public static void main(String[] args) {
 		ServerSocket server = null;
 		Socket socket =null;
-		int num = 0;
+		int playerID = 1;
 		// Socket을 배열로 저장하기 위해 선언한 vec.
 		Vector<Socket> vec = new Vector<Socket>();
 		// Thread들의 인덱스를 저장하기 위해, 즉 Thread를 특정할 때 사용하기 위해 선언한 indexList.
-		ArrayList<Integer> indexList = new ArrayList<Integer>();
+
 		try{
 			server= new ServerSocket(3000);
 			System.out.println("The server is running...");
 			while(true){
 				socket = server.accept();
 				vec.add(socket);
-				indexList.add(num);
-				num++;	// 인덱스 하나씩 올리는 방식으로.
-				new EchoThread(socket, vec).start();
+
+				new EchoThread(socket, vec, playerID).start();
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());
@@ -238,5 +243,6 @@ public class ChatServer {
 				System.out.println(e.getMessage());
 			}
 		}
+
 	}
 }

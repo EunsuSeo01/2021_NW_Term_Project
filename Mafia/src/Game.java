@@ -18,15 +18,17 @@ import java.util.Arrays;
 public class Game {
    Socket socket;
    Vector<Socket> player;
+   int playerID; //해당플레이어 고유 식별 번호 1~
    int survivorNum; // 생존자 수
    int deadNum; // 죽은 사람 수
    long dayTime;
    long nightTime;
    int voteTime;
 
-   public Game(Socket socket, Vector<Socket> player) {
+   public Game(Socket socket, Vector<Socket> player, int playerID) {
       this.socket = socket;
       this.player = player;
+      this.playerID = playerID;
    }
 
    private void set() {
@@ -37,24 +39,31 @@ public class Game {
       voteTime = 15000; // 투표시간 15초
    }
 
-   public void start() throws IOException {
+   public void start() throws IOException { 
       set();
-      setRoles();
-      EchoThread et = new EchoThread(socket, player);
+      if(playerID ==1) {//역할 설정도 처음 한번만
+         setRoles();
+      }
+      System.out.println("나는 게임의 플레이어 ID" + playerID);//player ID test
+      EchoThread et = new EchoThread(socket, player, playerID);
       Timer daytimeTimer = new Timer();
       TimerTask daytimeTask = new TimerTask() {
          @Override
          public void run() {
-            et.broadcast("<System> 낮이 되었습니다. 토론을 시작하세요.");
-         }
+        	 if(playerID ==1) {//첫번쨰 플레이어만 broadcast 가능(중복방지)
+              et.broadcast("<System> 낮이 되었습니다. 토론을 시작하세요.");
+        	 }
+        }
       };
 
       Timer votetimeTimer = new Timer();
       TimerTask votetimeTask = new TimerTask() {
          @Override
          public void run() {
-            et.broadcast("<System> 투표를 시작합니다");
+        	if(playerID ==1) {
+             et.broadcast("<System> 투표를 시작합니다");
             // vote();
+        	}
          }
       };
 
@@ -62,7 +71,9 @@ public class Game {
       TimerTask nightTimeTask = new TimerTask() {
          @Override
          public void run() {
-            et.broadcast("<System> 밤이 되었습니다. 투표를 시작합니다");
+        	 if(playerID ==1) {
+               et.broadcast("<System> 밤이 되었습니다. 투표를 시작합니다");
+        	 }
          }
       };
 
