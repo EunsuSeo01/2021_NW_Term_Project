@@ -19,7 +19,7 @@ public class Game {
    Socket socket;
    Vector<Socket> player;
    int playerID; //해당플레이어 고유 식별 번호 1~
-   int votedPlayer;//투표할 플레이어 저장용 (투표끝나고 초기화 필요)
+   String votedPlayer;//투표할 플레이어 저장용 (투표끝나고 초기화 필요)
    int survivorNum; // 생존자 수
    int deadNum; // 죽은 사람 수
    long dayTime;
@@ -75,7 +75,7 @@ public class Game {
         	 if(playerID ==1) {
                et.broadcast("<System> 밤이 되었습니다. 투표를 시작합니다");
         	 }
-        	 System.out.println("나는 나는 게임의 플레이어 ID"+ playerID +"내가 투표한 사람은"+ votedPlayer);//투표 입력 받는지 test
+        	 System.out.println("나는 게임의 플레이어 ID"+ playerID +"내가 투표한 사람은"+ votedPlayer);//투표 입력 받는지 test
          }
       };
 
@@ -92,12 +92,10 @@ public class Game {
 
    }
    public void getToVotedNum() {// 투표한 플레이어 ID저장용 메소드
-
-
-	   votedPlayer = VoteFrame.getToVotedNum();
+	   VoteFrame VF = new VoteFrame();
+	   votedPlayer = VF.getToVotedNum();
    }
    
- 
 
    public void rand(int roles[], int playernum) {// 역할 배열 랜덤 섞기
       Random rd = new Random();

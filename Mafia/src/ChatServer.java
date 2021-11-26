@@ -71,7 +71,7 @@ class EchoThread extends Thread{
 					vec.remove(socket);
 					break;
 				}
-				if(string.equals("/p"))// && vec.size() >= 4 && vec.size() <= 8)
+				if(string.equals("/p") && vec.size() >= 4 && vec.size() <= 8)
 				{
 					broadcast("마피아 게임을 시작합니다!");
 					// Test
@@ -82,10 +82,10 @@ class EchoThread extends Thread{
 					 game.start();
 					}
 				}
-//				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
-//				{
-//					broadcast("인원이 너무 적거나 많습니다!");
-//				}
+				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
+				{
+					broadcast("인원이 너무 적거나 많습니다!");
+				}
 				else
 				{
 					sending(string);	
