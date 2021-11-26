@@ -116,6 +116,21 @@ class EchoThread extends Thread{
 		}
 	}
 
+	// 마피아들끼리 대화. 서로에게만 전송됨.
+	/*public void secret(String secret) {
+		synchronized(mafia) {
+			try{
+				for(Socket socket:mafia){
+					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+					writer.println(start);
+					writer.flush();	
+				}
+			}catch(IOException ie){
+				System.out.println(ie.getMessage());
+			}
+		}
+	}*/
+
 	//전송받은 문자열 다른 클라이언트들에게 보내주는 메서드
 	public void sending(String str){
 		try{
@@ -146,83 +161,6 @@ class EchoThread extends Thread{
 				System.out.println(ie.getMessage());
 			}
 		}
-	}
-}
-
-/**
- * 직업 랜덤 부여 기능의 결과가 어떻게 될지 몰라서 미완.
- * mafia가 다수인 경우 Vector에 마피아를 부여받은 쓰레드만 저장해서 할 경우로 가정해서 일단 구현함.
- */
-class MafiaThread extends Thread {
-	Socket socket;
-	Vector<Socket> mafia;
-
-	public MafiaThread(Socket socket, Vector<Socket> mafia){
-		// If Socket and Vector are correct, set it to value.
-		if (socket != null && mafia != null) {
-			this.socket = socket;
-			this.mafia = mafia;
-		}
-		// Otherwise, the thread is interrupted!
-		else {
-			System.out.println("Invalid!");
-			this.interrupt();
-		}
-	}
-
-	public void run(){
-		BufferedReader reader = null;
-		try{
-			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-			String string = null;
-			while(true)
-			{
-				string = reader.readLine();
-				if(string == null)
-				{
-					mafia.remove(socket);
-					break;
-				}
-				else if (string.equals("!k")) {
-					string = reader.readLine();
-					kill(string);
-				}
-				else
-					secret(string);
-			}
-
-		}catch(IOException ie){
-			System.out.println(ie.getMessage());
-		}finally{
-			try{
-				if(reader != null) reader.close();
-				if(socket != null) socket.close();
-			}catch(IOException ie){
-				System.out.println(ie.getMessage());
-			}
-		}
-	}
-
-	// 마피아들끼리 대화. 서로에게만 전송됨.
-	public void secret(String start) {
-		synchronized(mafia) {
-			try{
-				for(Socket socket:mafia){
-					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-					writer.println(start);
-					writer.flush();	
-				}
-			}catch(IOException ie){
-				System.out.println(ie.getMessage());
-			}
-		}
-	}
-
-	public void kill(String killed) {
-		/**
-		 * 투표
-		 */
 	}
 }
 
