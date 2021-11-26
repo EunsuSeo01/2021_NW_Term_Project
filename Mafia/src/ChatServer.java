@@ -16,7 +16,9 @@ class EchoThread extends Thread{
 	Vector<Socket> vec;
 	int currentClient;;
 	int playerID = 1;//게임진행시 필요한 플레이어 식별번호
-
+	int voteNum = 0; //투표를 받은 사람의 번호 저장
+	int confirmVote = 0; // 투표를 했는지 안했는지 저장
+	
 	public EchoThread(Socket socket, Vector<Socket> vec, int playerID)
 	{
 		// If Socket and Vector are correct, set it to value.
@@ -25,9 +27,6 @@ class EchoThread extends Thread{
 			this.vec = vec;
 			currentClient = vec.size();
 			this.playerID = playerID;
-
-
-
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -65,7 +64,7 @@ class EchoThread extends Thread{
 			while(true)
 			{
 				string = reader.readLine();
-				System.out.println("Server" + string);
+				System.out.println("Server " + string);
 				if(string == null)
 				{
 					vec.remove(socket);
@@ -75,7 +74,6 @@ class EchoThread extends Thread{
 				{
 					broadcast("마피아 게임을 시작합니다!");
 					// Test
-
 					for(int i=0; i< vec.size(); i++) {
 						Game game = new Game(vec.get(i), vec, playerID);
 						playerID++;
@@ -85,6 +83,21 @@ class EchoThread extends Thread{
 				else if((string.equals("/p") && vec.size() < 4) || (string.equals("/p") && vec.size() > 8))
 				{
 					broadcast("인원이 너무 적거나 많습니다!");
+				}
+				else if(string.equals("/d"))
+				{
+					broadcast("<System> 낮이 되었습니다. 토론을 시작하세요.");
+					confirmVote = 0;
+				}
+				else if(string.equals("/n"))
+				{
+					broadcast("<System> 밤이 되었습니다.");
+				}
+				else if(string.contains("/vote") && confirmVote == 0)
+				{
+					voteNum = Integer.parseInt(string.substring(5).trim());
+					System.out.println("Succes!"+ voteNum);
+					confirmVote++;
 				}
 				else
 				{
@@ -115,21 +128,6 @@ class EchoThread extends Thread{
 			System.out.println(ie.getMessage());
 		}
 	}
-
-	// 마피아들끼리 대화. 서로에게만 전송됨.
-	/*public void secret(String secret) {
-		synchronized(mafia) {
-			try{
-				for(Socket socket:mafia){
-					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-					writer.println(start);
-					writer.flush();	
-				}
-			}catch(IOException ie){
-				System.out.println(ie.getMessage());
-			}
-		}
-	}*/
 
 	//전송받은 문자열 다른 클라이언트들에게 보내주는 메서드
 	public void sending(String str){

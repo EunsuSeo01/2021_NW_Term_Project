@@ -9,6 +9,7 @@ class WritingThread{
 	Socket socket;
 	ClientFrame client;
 	String str;
+	int votenumber =0;
 	String nickname;
 	public WritingThread(ClientFrame client) {
 		this.client  = client;
@@ -30,10 +31,20 @@ class WritingThread{
 				writer.println(str);
 				writer.flush();
 			}
-			else if(client.textField.getText().equals("/p"))// protocol
+			else if(client.textField.getText().equals("/p"))// game play protocol
 			{
 				str = client.textField.getText();
-				System.out.println(str);
+				writer.println(str);
+				writer.flush();
+			}
+			else if(client.textField.getText().equals("/d"))// game play protocol
+			{
+				writer.println("/d");
+				writer.flush();
+			}
+			else if(client.textField.getText().contains("/vote"))
+			{
+				str = client.textField.getText().trim();
 				writer.println(str);
 				writer.flush();
 			}
@@ -104,4 +115,3 @@ public class ChatClient {
 		}
 	}
 }
-
