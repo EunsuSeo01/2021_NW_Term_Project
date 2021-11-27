@@ -37,9 +37,8 @@ public class Game {
 	private void set() {
 		survivorNum = player.size(); // 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
 		deadNum = 0;
-		dayTime = survivorNum * 5000; // 낮 시간 (생존자수*15초)
-		nightTime = survivorNum * 5000; // 밤 시간 (생존자수*15초)
-		voteTime = 15000; // 투표시간 15초
+		dayTime = survivorNum * 1000; // 낮 시간 (생존자수*15초)
+		nightTime = survivorNum * 1000; // 밤 시간 (생존자수*15초)
 	}
 
 	public void start() throws IOException { 
@@ -85,8 +84,8 @@ public class Game {
 			}
 		};
 
-		daytimeTimer.schedule(daytimeTask, 0, dayTime + nightTime + voteTime);
-		nightTimer.schedule(nightTimeTask, dayTime + voteTime, dayTime + nightTime + voteTime);
+		daytimeTimer.schedule(daytimeTask, 0, dayTime + nightTime);
+		nightTimer.schedule(nightTimeTask, dayTime, dayTime + nightTime);
 
 	}
 	//*********** vote 관련 메소드시작
@@ -391,7 +390,7 @@ public class Game {
 						PrintWriter writer = null;
 						try{
 							writer = new PrintWriter(socket.getOutputStream(),true);
-							writer.println("/die");	// protocol
+							writer.println("/die " + et.playerID);	// protocol
 							writer.flush();
 						}catch(IOException ie){
 							System.out.println(ie.getMessage());

@@ -89,7 +89,9 @@ class ListeningThread extends Thread{
 					writer.println(str);
 					writer.flush();
 				}
-				else if (str.equals("/die")) {
+				else if (str.contains("/die")) {
+					writer.println(str);
+					writer.flush();
 					client.setVisible(false);	// 죽은 플레이어의 쓰레드 창 아예 닫아버리기.
 				}
 				else

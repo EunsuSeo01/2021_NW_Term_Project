@@ -99,6 +99,13 @@ class EchoThread extends Thread{
 					System.out.println("Success!"+ voteNum);
 					confirmVote++;
 				}
+				else if(string.contains("/die"))
+				{
+					System.out.println("??");
+					String[] arr = string.split(" ");
+					System.out.println(arr[0] + "," + arr[1]);
+					broadcast("<System> " + arr[1] + "¹ø ´ÔÀÌ »ç¸ÁÇÏ¼Ì½À´Ï´Ù.");
+				}
 				else
 				{
 					sending(string);	
