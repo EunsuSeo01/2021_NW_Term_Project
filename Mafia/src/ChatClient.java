@@ -37,17 +37,6 @@ class WritingThread{
 				writer.println(str);
 				writer.flush();
 			}
-			else if(client.textField.getText().equals("/d"))// game play protocol
-			{
-				writer.println("/d");
-				writer.flush();
-			}
-			else if(client.textField.getText().contains("/vote"))
-			{
-				str = client.textField.getText().trim();
-				writer.println(str);
-				writer.flush();
-			}
 			else
 			{
 				str= "["+nickname+"] "+client.textField.getText();
@@ -80,8 +69,11 @@ class ListeningThread extends Thread{
 	}
 	public void run() {
 		BufferedReader reader =null;
+		PrintWriter writer = null;
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			writer = new PrintWriter(socket.getOutputStream(), true);
+			
 			while(true){
 				String str=reader.readLine();
 				if(str==null)
@@ -89,8 +81,16 @@ class ListeningThread extends Thread{
 					System.out.println("disconnect");
 					break;
 				}
-
-				client.textArea.append(str+"\n");
+				else if (str.equals("/d")) {
+					writer.println(str);
+					writer.flush();
+				}
+				else if (str.equals("/n")) {
+					writer.println(str);
+					writer.flush();
+				}
+				else
+					client.textArea.append(str+"\n");
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());

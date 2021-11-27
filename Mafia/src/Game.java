@@ -22,13 +22,11 @@ public class Game {
    String votedPlayer;//투표할 플레이어 저장용 (투표끝나고 초기화 필요)
    int survivorNum; // 생존자 수
    int deadNum; // 죽은 사람 수
-   int[] mafiaId;
    long dayTime;
    long nightTime;
    int voteTime;
 
    public Game(Socket socket, Vector<Socket> player, int playerID) {
-	   
       this.socket = socket;
       this.player = player;
       this.playerID = playerID;
@@ -37,7 +35,6 @@ public class Game {
    private void set() {
       survivorNum = player.size(); // 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
       deadNum = 0;
-      mafiaId = new int[survivorNum / 4];
       dayTime = survivorNum * 5000; // 낮 시간 (생존자수*15초)
       nightTime = survivorNum * 5000; // 밤 시간 (생존자수*15초)
       voteTime = 15000; // 투표시간 15초
@@ -59,7 +56,7 @@ public class Game {
         	 PrintWriter writer = null;
      		try{
      			writer = new PrintWriter(socket.getOutputStream(),true);
-     			writer.println("/d");
+     			writer.println("/d");	// protocol
 				writer.flush();
      		}catch(IOException ie){
     			System.out.println(ie.getMessage());
@@ -68,14 +65,21 @@ public class Game {
       };
 
       Timer nightTimer = new Timer();
-      TimerTask nightTimeTask = new TimerTask() {
-         @Override
-         public void run() {
-             et.view("<System> 밤이 되었습니다. 투표를 시작합니다");
-             
-        	 System.out.println("나는 게임의 플레이어 ID"+ playerID +"내가 투표한 사람은"+ votedPlayer);//투표 입력 받는지 test
-         }
-      };
+		TimerTask nightTimeTask = new TimerTask() {
+			@Override
+			public void run() {
+				PrintWriter writer = null;
+				try{
+					writer = new PrintWriter(socket.getOutputStream(),true);
+					writer.println("/n");	// protocol
+					writer.flush();
+				}catch(IOException ie){
+					System.out.println(ie.getMessage());
+				}
+
+				System.out.println("나는 게임의 플레이어 ID"+ playerID +"내가 투표한 사람은"+ votedPlayer);//투표 입력 받는지 test
+			}
+		};
 
       daytimeTimer.schedule(daytimeTask, 0, dayTime + nightTime + voteTime);
       nightTimer.schedule(nightTimeTask, dayTime + voteTime, dayTime + nightTime + voteTime);
@@ -365,13 +369,6 @@ public class Game {
       for (i = 0; i < playerNum; i++) {
          bw2.write(array[i][0] + " " + roles[i] + " 0" + " 0");
          bw2.newLine();
-         
-         // 마피아인 쓰레드들 번호만 따로 저장해두기 위해.
-         if (roles[i] == 1) {
-        	 mafiaId[m] = i + 1;
-        	 System.out.println("I'm mafia " + mafiaId[m]);	// test
-        	 m++;
-         }
       }
       bw2.close();
    }

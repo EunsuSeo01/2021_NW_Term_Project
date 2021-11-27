@@ -41,8 +41,8 @@ class EchoThread extends Thread{
 		BufferedReader reader = null;
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			
 			// Print the message that successfully connected with Client.
-
 			System.out.println(clientInfo + " - Connection to Client successful.");
 
 			File file = new File("clientInfo.txt");
@@ -86,17 +86,17 @@ class EchoThread extends Thread{
 				}
 				else if(string.equals("/d"))
 				{
-					broadcast("<System> 낮이 되었습니다. 토론을 시작하세요.");
+					view("<System> 낮이 되었습니다. 토론을 시작하세요.");
 					confirmVote = 0;
 				}
 				else if(string.equals("/n"))
 				{
-					broadcast("<System> 밤이 되었습니다.");
+					view("<System> 밤이 되었습니다.");
 				}
 				else if(string.contains("/vote") && confirmVote == 0)
 				{
 					voteNum = Integer.parseInt(string.substring(5).trim());
-					System.out.println("Succes!"+ voteNum);
+					System.out.println("Success!"+ voteNum);
 					confirmVote++;
 				}
 				else
@@ -121,7 +121,6 @@ class EchoThread extends Thread{
 	public void view(String str){
 		try{
 			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-			System.out.println("view");
 			writer.println(str);
 			writer.flush();
 		}catch(IOException ie){
@@ -137,7 +136,6 @@ class EchoThread extends Thread{
 				//나머지 socket들에게만 데이터를 보낸다.
 				if(socket != this.socket){
 					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-					System.out.println("sending");
 					writer.println(str);
 					writer.flush();
 				}
@@ -169,7 +167,6 @@ public class ChatServer {
 		int playerID = 1;
 		// Socket을 배열로 저장하기 위해 선언한 vec.
 		Vector<Socket> vec = new Vector<Socket>();
-		// Thread들의 인덱스를 저장하기 위해, 즉 Thread를 특정할 때 사용하기 위해 선언한 indexList.
 
 		try{
 			server= new ServerSocket(3000);
