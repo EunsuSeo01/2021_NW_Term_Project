@@ -52,7 +52,7 @@ class EchoThread extends Thread{
 
 			if(file.isFile() && file.canWrite())
 			{
-				bufferedWriter.write(currentClient + " 0" + " 0" + " 0");
+				bufferedWriter.write(playerID + " 0" + " 0" + " 0");
 				bufferedWriter.newLine();
 				bufferedWriter.close();
 			}
@@ -165,6 +165,7 @@ public class ChatServer {
 		ServerSocket server = null;
 		Socket socket =null;
 		int playerID = 1;
+		EchoThread et = null;
 		// Socket을 배열로 저장하기 위해 선언한 vec.
 		Vector<Socket> vec = new Vector<Socket>();
 
