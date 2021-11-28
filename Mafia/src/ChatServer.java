@@ -45,18 +45,7 @@ class EchoThread extends Thread{
 			// Print the message that successfully connected with Client.
 			System.out.println(clientInfo + " - Connection to Client successful.");
 
-			File file = new File("clientInfo.txt");
-
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true)); //파일을 새로만들지 않고 이어쓴다	
-
-
-			if(file.isFile() && file.canWrite())
-			{
-				bufferedWriter.write(playerID + " 0" + " 0" + " 0");
-				bufferedWriter.newLine();
-				bufferedWriter.close();
-			}
-			//test -> 누군가 종료했을 때는 반영되지 않음..
+			//test
 			System.out.println("currentClient: "+ currentClient);
 
 			String string = null;

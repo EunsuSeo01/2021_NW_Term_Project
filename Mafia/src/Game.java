@@ -26,12 +26,13 @@ public class Game {
 	long dayTime;
 	long nightTime;
 	int voteTime;
-	EchoThread et;
 
 	public Game(Socket socket, Vector<Socket> player, int playerID) {
 		this.socket = socket;
 		this.player = player;
 		this.playerID = playerID;
+
+		System.out.println("In Game, 난 " + playerID + "번이야");
 	}
 
 	private void set() {
@@ -43,12 +44,12 @@ public class Game {
 
 	public void start() throws IOException { 
 		set();
-		if(playerID ==1) { //역할 설정 처음 한번만
+		if(playerID == 1) { //역할 설정 처음 한번만
 			setRoles();
+			System.out.println("역할 설정할게");
 		}
 
 		System.out.println("나는 게임의 플레이어 ID" + playerID);//player ID test
-		et = new EchoThread(socket, player, playerID);
 
 		Timer daytimeTimer = new Timer();
 		TimerTask daytimeTask = new TimerTask() {
@@ -80,7 +81,7 @@ public class Game {
 					System.out.println(ie.getMessage());
 				}
 
-				System.out.println("나는 게임의 플레이어 ID"+ playerID +"내가 투표한 사람은"+ votedPlayer);//투표 입력 받는지 test
+				System.out.println("나는 게임의 플레이어 ID"+ playerID  +"내가 투표한 사람은"+ votedPlayer);//투표 입력 받는지 test
 			}
 		};
 
@@ -138,7 +139,7 @@ public class Game {
 	public int voteResult()throws IOException {//당선된 사람 결정 동률은 동률중 랜덤으로 처리
 		int [][] array = new int [survivorNum][4];
 		int [][] tieChecker = new int [survivorNum][2];//동률 검사용 배열
-		int maxVoteID;//최다 득표자 playerID (int 값이라 추후 string으로 변환해야 할 수도)
+		int maxVoteID;//최다 득표자  (int 값이라 추후 string으로 변환해야 할 수도)
 
 		String str[] = null;
 		String s;
@@ -331,48 +332,15 @@ public class Game {
 		rand(roles, playerNum);
 
 		File file = new File("clientInfo.txt");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-
-		while ((s = br.readLine()) != null) {// 데이터 갯수 count에 저장
-			count++;
-		}
-		br.close();
-
-		str = new String[count];// 할당
-
-		int i = 0;// 데이터 저장
-		BufferedReader br2 = new BufferedReader(new FileReader(file));
-		while ((s = br2.readLine()) != null) {
-			str[i] = s;
-			i++;
-		}
-
-		for (i = 0; i < playerNum; i++) {// 초기화
-			for (int j = 0; j < 4; j++) {
-				array[i][j] = "";
-
-			}
-		}
-		for (i = 0; i < playerNum; i++) {// 배열에 파일 정보 저장
-			s = str[i];
-			String split[] = s.split(" ");
-
-			array[i][0] = split[0];
-			array[i][1] = split[1];
-			array[i][2] = split[2];
-			array[i][3] = split[3];
-		}
+		int i = 0;
 		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-		bw.close();
-		BufferedWriter bw2 = new BufferedWriter(new FileWriter(file,true));
 
-		int m = 0;
 		// 파일에 쓰기
 		for (i = 0; i < playerNum; i++) {
-			bw2.write(array[i][0] + " " + roles[i] + " 0" + " 0");
-			bw2.newLine();
+			bw.write(i + 1 + " " + roles[i] + " 0" + " 0");
+			bw.newLine();
 		}
-		bw2.close();
+		bw.close();
 	}   
 
 	// 죽은 플레이어 있는지 찾고 창 종료.
@@ -386,11 +354,11 @@ public class Game {
 			while ((str = fileReader.readLine()) != null) {
 				String arr[] = str.split(" ");
 				if (arr[2].equals("1")) {
-					if(et.playerID == line + 1) {
+					if(playerID == line + 1) {
 						PrintWriter writer = null;
 						try{
 							writer = new PrintWriter(socket.getOutputStream(),true);
-							writer.println("/die " + et.playerID);	// protocol
+							writer.println("/die " + playerID);	// protocol
 							writer.flush();
 						}catch(IOException ie){
 							System.out.println(ie.getMessage());
