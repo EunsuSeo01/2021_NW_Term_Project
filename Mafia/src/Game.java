@@ -21,6 +21,7 @@ public class Game {
 	Vector<Socket> player;
 	int playerID; //해당플레이어 고유 식별 번호 1~
 	String votedPlayer;//투표할 플레이어 저장용 (투표끝나고 초기화 필요)
+	int totalPlayer;//전체 플레이어수
 	int survivorNum; // 생존자 수
 	int deadNum; // 죽은 사람 수
 	long dayTime;
@@ -37,6 +38,7 @@ public class Game {
 
 	private void set() {
 		survivorNum = player.size(); // 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
+		totalPlayer = player.size();
 		deadNum = 0;
 		dayTime = survivorNum * 1000; // 낮 시간 (생존자수*15초)
 		nightTime = survivorNum * 1000; // 밤 시간 (생존자수*15초)
@@ -93,7 +95,7 @@ public class Game {
 
 	public void voteCount() throws IOException {//투표된 플레이어에게 득표수 +1
 
-		int [][] array = new int [survivorNum][4];
+		int [][] array = new int [totalPlayer][4];
 		String str[] = null;
 		String s;
 		int toVote = Integer.parseInt(votedPlayer);
@@ -108,7 +110,7 @@ public class Game {
 			k++;
 		}
 
-		for (int i = 0; i < survivorNum; i++) {// 배열에 파일 정보 int 형태로 저장
+		for (int i = 0; i < totalPlayer; i++) {// 배열에 파일 정보 int 형태로 저장
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -126,7 +128,7 @@ public class Game {
 		bwv1.close();
 
 		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));
-		for (int i = 0; i < survivorNum; i++) {
+		for (int i = 0; i < totalPlayer; i++) {
 			bwv2.write(array[i][0] + " " + array[i][1] +" " + array[i][2]+" " + array[i][3]);
 			bwv2.newLine();
 		}
@@ -137,9 +139,9 @@ public class Game {
 	}
 
 	public int voteResult()throws IOException {//당선된 사람 결정 동률은 동률중 랜덤으로 처리
-		int [][] array = new int [survivorNum][4];
-		int [][] tieChecker = new int [survivorNum][2];//동률 검사용 배열
-		int maxVoteID;//최다 득표자  (int 값이라 추후 string으로 변환해야 할 수도)
+		int [][] array = new int [totalPlayer][4];
+		int [][] tieChecker = new int [totalPlayer][2];//동률 검사용 배열
+		int maxVoteID;//최다 득표자 playerID(int 값이라 추후 string으로 변환해야 할 수도)
 
 		String str[] = null;
 		String s;
@@ -153,7 +155,7 @@ public class Game {
 			k++;
 		}
 
-		for (int i = 0; i < survivorNum; i++) {// 배열에 파일 정보 int 형태로 저장
+		for (int i = 0; i < totalPlayer; i++) {// 배열에 파일 정보 int 형태로 저장
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -165,7 +167,7 @@ public class Game {
 		}
 		brv.close();
 
-		for (int i = 0; i < survivorNum; i++) {// 배열 초기화
+		for (int i = 0; i < totalPlayer; i++) {// 배열 초기화
 			for (int j = 0; j < 2; j++) {
 				tieChecker[i][j] = 0;
 
@@ -175,13 +177,13 @@ public class Game {
 
 		int tieNum = 1;//비긴사람수 +1
 		int max =array[0][3];//max값 초기화
-		for (int i = 0; i < survivorNum; i++) {// 각 플레이어 마다 득표수 비교
+		for (int i = 0; i < totalPlayer; i++) {// 각 플레이어 마다 득표수 비교
 			if(array[i][3]> max) {
 				max = array[i][3];
 
 			}
 		}
-		for (int i = 0; i < survivorNum; i++) {//동률check해서 동률일 경우 동률인것 중에 랜덤으로 
+		for (int i = 0; i < totalPlayer; i++) {//동률check해서 동률일 경우 동률인것 중에 랜덤으로 
 			if(array[i][3] == max){
 				tieChecker[i][0] = array[i][3];
 				tieNum ++;
@@ -205,7 +207,7 @@ public class Game {
 	}
 
 	public void killedByVote(int tokill) throws IOException {//죽일 사람 ID int 형태로 넘겨받아 파일로가서 그 사람 생존여부 사망처리(0= 생존, 1=사망)
-		int [][] array = new int [survivorNum][4];
+		int [][] array = new int [totalPlayer][4];
 
 		String str[] = null;
 		String s;
@@ -219,7 +221,7 @@ public class Game {
 			k++;
 		}
 
-		for (int i = 0; i < survivorNum; i++) {// 배열에 파일 정보 int 형태로 저장
+		for (int i = 0; i < totalPlayer; i++) {// 배열에 파일 정보 int 형태로 저장
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -236,7 +238,7 @@ public class Game {
 		bwv1.close();
 
 		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));//파일열고 투표 결과 반영(죽이기)
-		for (int i = 0; i < survivorNum; i++) {
+		for (int i = 0; i < totalPlayer; i++) {
 			bwv2.write(array[i][0] + " " + array[i][1] +" " + array[i][2]+" " + array[i][3]);
 			bwv2.newLine();
 		}
@@ -245,7 +247,7 @@ public class Game {
 
 	public void voteReset()throws IOException {//투표 끝난뒤 득표수 0으로 초기화 해주는 메소드
 
-		int [][] array = new int [survivorNum][4];
+		int [][] array = new int [totalPlayer][4];
 		String str[] = null;
 		String s;
 
@@ -260,7 +262,7 @@ public class Game {
 			k++;
 		}
 
-		for (int i = 0; i < survivorNum; i++) {// 배열에 파일 정보 int 형태로 저장
+		for (int i = 0; i < totalPlayer; i++) {// 배열에 파일 정보 int 형태로 저장
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -270,7 +272,7 @@ public class Game {
 			array[i][2] = Integer.parseInt(split[2]);;
 			array[i][3] = Integer.parseInt(split[3]);
 		}
-		for (int i = 0; i < survivorNum; i++) {//득표수 0으로 초기화
+		for (int i = 0; i < totalPlayer; i++) {//득표수 0으로 초기화
 
 			array[i][3] = 0;
 		}
@@ -281,13 +283,15 @@ public class Game {
 		bwv1.close();
 
 		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));
-		for (int i = 0; i < survivorNum; i++) {
+		for (int i = 0; i < totalPlayer; i++) {
 			bwv2.write(array[i][0] + " " + array[i][1] +" " + array[i][2]+" " + array[i][3]);
 			bwv2.newLine();
 		}
 		bwv2.close();
+		
 
 	}
+
 	//***********vote 관련 메소드 끝
 
 	public void rand(int roles[], int playernum) {// 역할 배열 랜덤 섞기
@@ -303,11 +307,11 @@ public class Game {
 
 	public void setRoles() throws IOException {//역할 설정
 
-		int playerNum = survivorNum;
+		int playerNum = totalPlayer;
 		int mafiaNum = 1;
 		int doctorNum = 1;
 		int copNum = 1;
-		String[][] array = new String[survivorNum][4];
+		String[][] array = new String[totalPlayer][4];
 		String str[] = null;
 		int count = 0;
 		String s;
