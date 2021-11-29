@@ -14,16 +14,16 @@ import java.util.Vector;
 
 
 /**
- * ÀüÃ¼ÀûÀÎ °ÔÀÓÀÌ ÁøÇàµÇ´Â Å¬·¡½º.
+ * ì „ì²´ì ì¸ ê²Œì„ì´ ì§„í–‰ë˜ëŠ” í´ë˜ìŠ¤.
  */
 public class Game {
 	Socket socket;
 	Vector<Socket> player;
-	int playerID; //ÇØ´çÇÃ·¹ÀÌ¾î °íÀ¯ ½Äº° ¹øÈ£ 1~
-	String votedPlayer;//ÅõÇ¥ÇÒ ÇÃ·¹ÀÌ¾î ÀúÀå¿ë (ÅõÇ¥³¡³ª°í ÃÊ±âÈ­ ÇÊ¿ä)
-	int totalPlayer;//ÀüÃ¼ ÇÃ·¹ÀÌ¾î¼ö
-	int survivorNum; // »ıÁ¸ÀÚ ¼ö
-	int deadNum; // Á×Àº »ç¶÷ ¼ö
+	int playerID; //í•´ë‹¹í”Œë ˆì´ì–´ ê³ ìœ  ì‹ë³„ ë²ˆí˜¸ 1~
+	String votedPlayer;//íˆ¬í‘œí•  í”Œë ˆì´ì–´ ì €ì¥ìš© (íˆ¬í‘œëë‚˜ê³  ì´ˆê¸°í™” í•„ìš”)
+	int totalPlayer;//ì „ì²´ í”Œë ˆì´ì–´ìˆ˜
+	int survivorNum; // ìƒì¡´ì ìˆ˜
+	int deadNum; // ì£½ì€ ì‚¬ëŒ ìˆ˜
 	long dayTime;
 	long nightTime;
 	int voteTime;
@@ -33,25 +33,25 @@ public class Game {
 		this.player = player;
 		this.playerID = playerID;
 
-		System.out.println("In Game, ³­ " + playerID + "¹øÀÌ¾ß");
+		System.out.println("In Game, ë‚œ " + playerID + "ë²ˆì´ì•¼");
 	}
 
 	private void set() {
-		survivorNum = player.size(); // °ÔÀÓÀ» ½ÃÀÛÇÑ ÇöÀç °ÔÀÓ ÇÃ·¹ÀÌ¾î ¼ö. Áï, »ıÁ¸ÀÚ ¼ö.
+		survivorNum = player.size(); // ê²Œì„ì„ ì‹œì‘í•œ í˜„ì¬ ê²Œì„ í”Œë ˆì´ì–´ ìˆ˜. ì¦‰, ìƒì¡´ì ìˆ˜.
 		totalPlayer = player.size();
 		deadNum = 0;
-		dayTime = survivorNum * 1000; // ³· ½Ã°£ (»ıÁ¸ÀÚ¼ö*15ÃÊ)
-		nightTime = survivorNum * 1000; // ¹ã ½Ã°£ (»ıÁ¸ÀÚ¼ö*15ÃÊ)
+		dayTime = survivorNum * 1000; // ë‚® ì‹œê°„ (ìƒì¡´ììˆ˜*15ì´ˆ)
+		nightTime = survivorNum * 1000; // ë°¤ ì‹œê°„ (ìƒì¡´ììˆ˜*15ì´ˆ)
 	}
 
 	public void start() throws IOException { 
 		set();
-		if(playerID == 1) { //¿ªÇÒ ¼³Á¤ Ã³À½ ÇÑ¹ø¸¸
+		if(playerID == 1) { //ì—­í•  ì„¤ì • ì²˜ìŒ í•œë²ˆë§Œ
 			setRoles();
-			System.out.println("¿ªÇÒ ¼³Á¤ÇÒ°Ô");
+			System.out.println("ì—­í•  ì„¤ì •í• ê²Œ");
 		}
 
-		System.out.println("³ª´Â °ÔÀÓÀÇ ÇÃ·¹ÀÌ¾î ID" + playerID);//player ID test
+		System.out.println("ë‚˜ëŠ” ê²Œì„ì˜ í”Œë ˆì´ì–´ ID" + playerID);//player ID test
 
 		Timer daytimeTimer = new Timer();
 		TimerTask daytimeTask = new TimerTask() {
@@ -63,7 +63,7 @@ public class Game {
 					writer.println("/d");	// protocol
 					writer.flush();
 
-					checkDie();	// ¸Å ³·¸¶´Ù Á×Àº »ç¶÷ ÀÖ´ÂÁö È®ÀÎ.
+					checkDie();	// ë§¤ ë‚®ë§ˆë‹¤ ì£½ì€ ì‚¬ëŒ ìˆëŠ”ì§€ í™•ì¸.
 				}catch(IOException ie){
 					System.out.println(ie.getMessage());
 				}
@@ -83,7 +83,7 @@ public class Game {
 					System.out.println(ie.getMessage());
 				}
 
-				System.out.println("³ª´Â °ÔÀÓÀÇ ÇÃ·¹ÀÌ¾î ID"+ playerID  +"³»°¡ ÅõÇ¥ÇÑ »ç¶÷Àº"+ votedPlayer);//ÅõÇ¥ ÀÔ·Â ¹Ş´ÂÁö test
+				System.out.println("ë‚˜ëŠ” ê²Œì„ì˜ í”Œë ˆì´ì–´ ID"+ playerID  +"ë‚´ê°€ íˆ¬í‘œí•œ ì‚¬ëŒì€"+ votedPlayer);//íˆ¬í‘œ ì…ë ¥ ë°›ëŠ”ì§€ test
 			}
 		};
 
@@ -91,9 +91,9 @@ public class Game {
 		nightTimer.schedule(nightTimeTask, dayTime, dayTime + nightTime);
 
 	}
-	//*********** vote °ü·Ã ¸Ş¼Òµå½ÃÀÛ
+	//*********** vote ê´€ë ¨ ë©”ì†Œë“œì‹œì‘
 
-	public void voteCount() throws IOException {//ÅõÇ¥µÈ ÇÃ·¹ÀÌ¾î¿¡°Ô µæÇ¥¼ö +1
+	public void voteCount() throws IOException {//íˆ¬í‘œëœ í”Œë ˆì´ì–´ì—ê²Œ ë“í‘œìˆ˜ +1
 
 		int [][] array = new int [totalPlayer][4];
 		String str[] = null;
@@ -104,13 +104,13 @@ public class Game {
 
 		int k = 0;
 		str = new String[10];
-		BufferedReader brv = new BufferedReader(new FileReader(file));//ÆÄÀÏ ³»¿ë ÀüÃ¼ ÀúÀå
+		BufferedReader brv = new BufferedReader(new FileReader(file));//íŒŒì¼ ë‚´ìš© ì „ì²´ ì €ì¥
 		while ((s = brv.readLine()) != null) {
 			str[k] = s;
 			k++;
 		}
 
-		for (int i = 0; i < totalPlayer; i++) {// ¹è¿­¿¡ ÆÄÀÏ Á¤º¸ int ÇüÅÂ·Î ÀúÀå
+		for (int i = 0; i < totalPlayer; i++) {// ë°°ì—´ì— íŒŒì¼ ì •ë³´ int í˜•íƒœë¡œ ì €ì¥
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -121,10 +121,10 @@ public class Game {
 			array[i][3] = Integer.parseInt(split[3]);
 		}
 
-		array[toVote-1][3]++;//µæÇ¥¼ö +1
+		array[toVote-1][3]++;//ë“í‘œìˆ˜ +1
 		brv.close();
 
-		BufferedWriter bwv1 = new BufferedWriter(new FileWriter(file));//¾Æ¸¶ ÆÄÀÏ ºñ¿ì±â
+		BufferedWriter bwv1 = new BufferedWriter(new FileWriter(file));//ì•„ë§ˆ íŒŒì¼ ë¹„ìš°ê¸°
 		bwv1.close();
 
 		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));
@@ -134,14 +134,14 @@ public class Game {
 		}
 		bwv2.close();
 
-		//votedPlayer = null;//ÅõÇ¥ÇÒ »ç¶÷ ÃÊ±âÈ­
+		//votedPlayer = null;//íˆ¬í‘œí•  ì‚¬ëŒ ì´ˆê¸°í™”
 
 	}
 
-	public int voteResult()throws IOException {//´ç¼±µÈ »ç¶÷ °áÁ¤ µ¿·üÀº µ¿·üÁß ·£´ıÀ¸·Î Ã³¸®
+	public int voteResult()throws IOException {//ë‹¹ì„ ëœ ì‚¬ëŒ ê²°ì • ë™ë¥ ì€ ë™ë¥ ì¤‘ ëœë¤ìœ¼ë¡œ ì²˜ë¦¬
 		int [][] array = new int [totalPlayer][4];
-		int [][] tieChecker = new int [totalPlayer][2];//µ¿·ü °Ë»ç¿ë ¹è¿­
-		int maxVoteID;//ÃÖ´Ù µæÇ¥ÀÚ playerID(int °ªÀÌ¶ó ÃßÈÄ stringÀ¸·Î º¯È¯ÇØ¾ß ÇÒ ¼öµµ)
+		int [][] tieChecker = new int [totalPlayer][2];//ë™ë¥  ê²€ì‚¬ìš© ë°°ì—´
+		int maxVoteID;//ìµœë‹¤ ë“í‘œì playerID(int ê°’ì´ë¼ ì¶”í›„ stringìœ¼ë¡œ ë³€í™˜í•´ì•¼ í•  ìˆ˜ë„)
 
 		String str[] = null;
 		String s;
@@ -149,13 +149,13 @@ public class Game {
 
 		int k = 0;
 		str = new String[10];
-		BufferedReader brv = new BufferedReader(new FileReader(file));//ÆÄÀÏ ³»¿ë ÀüÃ¼ ÀúÀå
+		BufferedReader brv = new BufferedReader(new FileReader(file));//íŒŒì¼ ë‚´ìš© ì „ì²´ ì €ì¥
 		while ((s = brv.readLine()) != null) {
 			str[k] = s;
 			k++;
 		}
 
-		for (int i = 0; i < totalPlayer; i++) {// ¹è¿­¿¡ ÆÄÀÏ Á¤º¸ int ÇüÅÂ·Î ÀúÀå
+		for (int i = 0; i < totalPlayer; i++) {// ë°°ì—´ì— íŒŒì¼ ì •ë³´ int í˜•íƒœë¡œ ì €ì¥
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -167,7 +167,7 @@ public class Game {
 		}
 		brv.close();
 
-		for (int i = 0; i < totalPlayer; i++) {// ¹è¿­ ÃÊ±âÈ­
+		for (int i = 0; i < totalPlayer; i++) {// ë°°ì—´ ì´ˆê¸°í™”
 			for (int j = 0; j < 2; j++) {
 				tieChecker[i][j] = 0;
 
@@ -175,15 +175,15 @@ public class Game {
 		}
 
 
-		int tieNum = 1;//ºñ±ä»ç¶÷¼ö +1
-		int max =array[0][3];//max°ª ÃÊ±âÈ­
-		for (int i = 0; i < totalPlayer; i++) {// °¢ ÇÃ·¹ÀÌ¾î ¸¶´Ù µæÇ¥¼ö ºñ±³
+		int tieNum = 1;//ë¹„ê¸´ì‚¬ëŒìˆ˜ +1
+		int max =array[0][3];//maxê°’ ì´ˆê¸°í™”
+		for (int i = 0; i < totalPlayer; i++) {// ê° í”Œë ˆì´ì–´ ë§ˆë‹¤ ë“í‘œìˆ˜ ë¹„êµ
 			if(array[i][3]> max) {
 				max = array[i][3];
 
 			}
 		}
-		for (int i = 0; i < totalPlayer; i++) {//µ¿·ücheckÇØ¼­ µ¿·üÀÏ °æ¿ì µ¿·üÀÎ°Í Áß¿¡ ·£´ıÀ¸·Î 
+		for (int i = 0; i < totalPlayer; i++) {//ë™ë¥ checkí•´ì„œ ë™ë¥ ì¼ ê²½ìš° ë™ë¥ ì¸ê²ƒ ì¤‘ì— ëœë¤ìœ¼ë¡œ 
 			if(array[i][3] == max){
 				tieChecker[i][0] = array[i][3];
 				tieNum ++;
@@ -200,13 +200,13 @@ public class Game {
 			}
 		}
 		int rmd = new Random().nextInt(randomSelect.length);
-		maxVoteID = randomSelect[rmd];//µ¿·üÀÏ¶© µ¿·üÁß ·£´ıÀ¸·Î ÇÏ³ª ¾Æ´Ï¸é ±×³É ÀúÀå. ÁøÂ¥ ID·Î ¾µ·Á¸é +1 ÇÊ¿ä (Áö±İÀº ¹è¿­ index°ªÀÓ)
+		maxVoteID = randomSelect[rmd];//ë™ë¥ ì¼ë• ë™ë¥ ì¤‘ ëœë¤ìœ¼ë¡œ í•˜ë‚˜ ì•„ë‹ˆë©´ ê·¸ëƒ¥ ì €ì¥. ì§„ì§œ IDë¡œ ì“¸ë ¤ë©´ +1 í•„ìš” (ì§€ê¸ˆì€ ë°°ì—´ indexê°’ì„)
 
 		return maxVoteID;
 
 	}
 
-	public void killedByVote(int tokill) throws IOException {//Á×ÀÏ »ç¶÷ ID int ÇüÅÂ·Î ³Ñ°Ü¹Ş¾Æ ÆÄÀÏ·Î°¡¼­ ±× »ç¶÷ »ıÁ¸¿©ºÎ »ç¸ÁÃ³¸®(0= »ıÁ¸, 1=»ç¸Á)
+	public void killedByVote(int tokill) throws IOException {//ì£½ì¼ ì‚¬ëŒ ID int í˜•íƒœë¡œ ë„˜ê²¨ë°›ì•„ íŒŒì¼ë¡œê°€ì„œ ê·¸ ì‚¬ëŒ ìƒì¡´ì—¬ë¶€ ì‚¬ë§ì²˜ë¦¬(0= ìƒì¡´, 1=ì‚¬ë§)
 		int [][] array = new int [totalPlayer][4];
 
 		String str[] = null;
@@ -215,13 +215,13 @@ public class Game {
 
 		int k = 0;
 		str = new String[10];
-		BufferedReader brv = new BufferedReader(new FileReader(file));//ÆÄÀÏ ³»¿ë ÀüÃ¼ ÀúÀå
+		BufferedReader brv = new BufferedReader(new FileReader(file));//íŒŒì¼ ë‚´ìš© ì „ì²´ ì €ì¥
 		while ((s = brv.readLine()) != null) {
 			str[k] = s;
 			k++;
 		}
 
-		for (int i = 0; i < totalPlayer; i++) {// ¹è¿­¿¡ ÆÄÀÏ Á¤º¸ int ÇüÅÂ·Î ÀúÀå
+		for (int i = 0; i < totalPlayer; i++) {// ë°°ì—´ì— íŒŒì¼ ì •ë³´ int í˜•íƒœë¡œ ì €ì¥
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -234,10 +234,10 @@ public class Game {
 		array[tokill][2] = 1;
 		brv.close();
 
-		BufferedWriter bwv1 = new BufferedWriter(new FileWriter(file));// ÆÄÀÏ ºñ¿ì±â
+		BufferedWriter bwv1 = new BufferedWriter(new FileWriter(file));// íŒŒì¼ ë¹„ìš°ê¸°
 		bwv1.close();
 
-		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));//ÆÄÀÏ¿­°í ÅõÇ¥ °á°ú ¹İ¿µ(Á×ÀÌ±â)
+		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));//íŒŒì¼ì—´ê³  íˆ¬í‘œ ê²°ê³¼ ë°˜ì˜(ì£½ì´ê¸°)
 		for (int i = 0; i < totalPlayer; i++) {
 			bwv2.write(array[i][0] + " " + array[i][1] +" " + array[i][2]+" " + array[i][3]);
 			bwv2.newLine();
@@ -245,7 +245,7 @@ public class Game {
 		bwv2.close();
 	}
 
-	public void voteReset()throws IOException {//ÅõÇ¥ ³¡³­µÚ µæÇ¥¼ö 0À¸·Î ÃÊ±âÈ­ ÇØÁÖ´Â ¸Ş¼Òµå
+	public void voteReset()throws IOException {//íˆ¬í‘œ ëë‚œë’¤ ë“í‘œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™” í•´ì£¼ëŠ” ë©”ì†Œë“œ
 
 		int [][] array = new int [totalPlayer][4];
 		String str[] = null;
@@ -256,13 +256,13 @@ public class Game {
 
 		int k = 0;
 		str = new String[10];
-		BufferedReader brv = new BufferedReader(new FileReader(file));//ÆÄÀÏ ³»¿ë ÀüÃ¼ ÀúÀå
+		BufferedReader brv = new BufferedReader(new FileReader(file));//íŒŒì¼ ë‚´ìš© ì „ì²´ ì €ì¥
 		while ((s = brv.readLine()) != null) {
 			str[k] = s;
 			k++;
 		}
 
-		for (int i = 0; i < totalPlayer; i++) {// ¹è¿­¿¡ ÆÄÀÏ Á¤º¸ int ÇüÅÂ·Î ÀúÀå
+		for (int i = 0; i < totalPlayer; i++) {// ë°°ì—´ì— íŒŒì¼ ì •ë³´ int í˜•íƒœë¡œ ì €ì¥
 
 			s = str[i];
 			String split[] = s.split(" ");
@@ -272,14 +272,14 @@ public class Game {
 			array[i][2] = Integer.parseInt(split[2]);;
 			array[i][3] = Integer.parseInt(split[3]);
 		}
-		for (int i = 0; i < totalPlayer; i++) {//µæÇ¥¼ö 0À¸·Î ÃÊ±âÈ­
+		for (int i = 0; i < totalPlayer; i++) {//ë“í‘œìˆ˜ 0ìœ¼ë¡œ ì´ˆê¸°í™”
 
 			array[i][3] = 0;
 		}
 
 		brv.close();
 
-		BufferedWriter bwv1 = new BufferedWriter(new FileWriter(file));// ÆÄÀÏ ºñ¿ì±â
+		BufferedWriter bwv1 = new BufferedWriter(new FileWriter(file));// íŒŒì¼ ë¹„ìš°ê¸°
 		bwv1.close();
 
 		BufferedWriter bwv2 = new BufferedWriter(new FileWriter(file,true));
@@ -292,9 +292,9 @@ public class Game {
 
 	}
 
-	//***********vote °ü·Ã ¸Ş¼Òµå ³¡
+	//***********vote ê´€ë ¨ ë©”ì†Œë“œ ë
 
-	public void rand(int roles[], int playernum) {// ¿ªÇÒ ¹è¿­ ·£´ı ¼¯±â
+	public void rand(int roles[], int playernum) {// ì—­í•  ë°°ì—´ ëœë¤ ì„ê¸°
 		Random rd = new Random();
 		for (int i = playernum - 1; i > 0; i--) {
 			int j = rd.nextInt(i + 1);
@@ -305,7 +305,7 @@ public class Game {
 		System.out.println(Arrays.toString(roles));
 	}
 
-	public void setRoles() throws IOException {//¿ªÇÒ ¼³Á¤
+	public void setRoles() throws IOException {//ì—­í•  ì„¤ì •
 
 		int playerNum = totalPlayer;
 		int mafiaNum = 1;
@@ -316,7 +316,7 @@ public class Game {
 		int count = 0;
 		String s;
 
-		// ¿ªÇÒ ÃÊ±âÈ­
+		// ì—­í•  ì´ˆê¸°í™”
 		// civilian = 0
 		// mafia = 1
 		// doctor = 2
@@ -339,7 +339,7 @@ public class Game {
 		int i = 0;
 		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
-		// ÆÄÀÏ¿¡ ¾²±â
+		// íŒŒì¼ì— ì“°ê¸°
 		for (i = 0; i < playerNum; i++) {
 			bw.write(i + 1 + " " + roles[i] + " 0" + " 0");
 			bw.newLine();
@@ -347,7 +347,7 @@ public class Game {
 		bw.close();
 	}   
 
-	// Á×Àº ÇÃ·¹ÀÌ¾î ÀÖ´ÂÁö Ã£°í Ã¢ Á¾·á.
+	// ì£½ì€ í”Œë ˆì´ì–´ ìˆëŠ”ì§€ ì°¾ê³  ì°½ ì¢…ë£Œ.
 	public void checkDie() {
 		try {
 			BufferedReader fileReader = new BufferedReader(new FileReader("clientInfo.txt"));
@@ -389,22 +389,22 @@ public class Game {
 			int count = 0;
 			int mafiaNum = 0;
 			int citizenNum = 0;
-			str = new String[count];// ÇÒ´ç
+			str = new String[count];// í• ë‹¹
 
 			String asdf = "";
 			while ((s = br3.readLine()) != null) {
-				asdf += s;
+				asdf +=  s + "/";
 				count++;
 			}
 
-			for (int i = 0; i < count; i++) {// ÃÊ±âÈ­
+			for (int i = 0; i < count; i++) {// ì´ˆê¸°í™”
 				for (int j = 0; j < 4; j++) {
 					array[i][j] = "";
 
 				}
 			}
-			for (int i = 0; i < count; i++) {// ¹è¿­¿¡ ÆÄÀÏ Á¤º¸ ÀúÀå
-				String split[] = asdf.split(" ");
+			for (int i = 0; i < count; i++) {// ë°°ì—´ì— íŒŒì¼ ì •ë³´ ì €ì¥
+				String split[] = asdf.split("/");
 
 				array[i][0] = split[0];
 				array[i][1] = split[1];
@@ -414,11 +414,11 @@ public class Game {
 
 			for (int i = 0; i < count; i++)
 			{
-				if(Integer.parseInt(array[i][1]) == 1 && Integer.parseInt(array[i][3]) == 0)
+				if(array[i][1].equals("1") && array[i][3].equals("0"))
 				{
 					mafiaNum++;
 				}
-				else if(Integer.parseInt(array[i][1]) != 1 && Integer.parseInt(array[i][3]) == 0)
+				else if(!array[i][1].equals("1") && array[i][3].equals("0"))
 				{
 					citizenNum++;
 				}
