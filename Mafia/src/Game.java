@@ -55,7 +55,7 @@ public class Game {
 		System.out.println("나는 게임의 플레이어 ID" + playerID);//player ID test
 
 		jobAlert();
-		
+
 		Timer daytimeTimer = new Timer();
 		TimerTask daytimeTask = new TimerTask() {
 			@Override
@@ -80,7 +80,7 @@ public class Game {
 				PrintWriter writer = null;
 				try{
 					if(playerID == 1) {//voteCalculater 한번만 작동하도록해야함
-						voteCalculater();
+						//voteCalculater();
 					}
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/n");	// protocol
@@ -438,7 +438,7 @@ public class Game {
 			bw.newLine();
 		}
 		bw.close();
-	}   
+	}
 
 	// 죽은 플레이어 있는지 찾고 창 종료.
 	public void checkDie() {

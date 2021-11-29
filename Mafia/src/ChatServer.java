@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,10 +19,12 @@ class EchoThread extends Thread{
 	int voteNum = 0; //투표를 받은 사람의 번호 저장
 	int mafiaTriedToKill = 0;//마피아가 죽이려든사람
 	int docTriedToheal = 0;//의사가 살릴려고 한사람
+	int copTriedTocheck = 0;	// 경찰이 수사한 사람.
 	int confirmVote = 0; // 투표를 했는지 안했는지 저장
 	int confirmKill = 0;//죽였는지 아닌지 저장
 	int confirmHeal = 0;//살렸는지 아닌지 저장
-	
+	int confirmCheck = 0;	// 수사했는지(1) 안 했는지(0) 저장.
+
 	Game game;
 
 	public EchoThread(Socket socket, Vector<Socket> vec, int playerID)
@@ -87,6 +90,7 @@ class EchoThread extends Thread{
 					confirmVote = 0;
 					confirmKill = 0;
 					confirmHeal = 0;
+					confirmCheck = 0;
 				}
 				else if(string.equals("/n"))
 				{
@@ -117,7 +121,24 @@ class EchoThread extends Thread{
 					System.out.println(playerID + "가 살리려 한건 " + docTriedToheal);
 					System.out.println("Heal!"+ docTriedToheal);
 					confirmHeal++;
-					
+
+				}
+				else if(string.contains("/check")&& confirmCheck == 0)//경찰 능력
+				{
+					String[] arr = string.split(" ");
+					copTriedTocheck = Integer.parseInt(arr[1]);
+					System.out.println(playerID + "가 수사한 건 " + copTriedTocheck);
+					if (isMafia(copTriedTocheck))
+						view(copTriedTocheck + "번은 마피아입니다.");
+					else
+						view(copTriedTocheck + "번은 마피아가 아닙니다.");
+					System.out.println("check! "+ copTriedTocheck);
+					confirmCheck++;
+
+				}
+				else if(string.contains("/check")&& confirmCheck == 1)//경찰의 실수로 명령어 들키는 거 방지
+				{
+					view("이번 턴에 이미 수사 기능을 사용하셨습니다. 다음 턴에 다시 시도하세요.");
 				}
 				else if(string.contains("/die"))
 				{
@@ -157,6 +178,29 @@ class EchoThread extends Thread{
 		else if(mafiaTriedToKill==docTriedToheal&&(mafiaTriedToKill!=0)){
 			broadcast("<System> 의사가 플레이어" + docTriedToheal +"님을 살렸습니다!");
 		}
+	}
+
+	// 해당 playerID를 가진 사람이 마피아인지 아닌지 확인. -> 경찰 수사 기능.
+	public boolean isMafia(int playerID) {
+		try {
+			BufferedReader fileReader = new BufferedReader(new FileReader("clientInfo.txt"));
+			String str;
+			int line = 0;
+
+			System.out.println("Cop's checking ... ");
+			while ((str = fileReader.readLine()) != null) {
+				String arr[] = str.split(" ");
+				if (line + 1 == playerID && arr[1].equals("1")) {
+					return true;
+				}
+				line++;
+			}
+
+			fileReader.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
 	}
 
 	// 메세지가 해당 쓰레드에게만 뜨게 하는 메서드.

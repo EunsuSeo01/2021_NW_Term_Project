@@ -21,7 +21,7 @@ class WritingThread{
 		PrintWriter writer = null;
 		try{
 			writer = new PrintWriter(socket.getOutputStream(),true);
-			
+
 			if(client.isFirst==true)
 			{
 				InetAddress address = socket.getLocalAddress();				
@@ -55,13 +55,19 @@ class WritingThread{
 				writer.println(str);
 				writer.flush();
 			}
+			else if(client.textField.getText().contains("/check"))// game play protocol
+			{
+				str = client.textField.getText();
+				writer.println(str);
+				writer.flush();
+			}
 			else
 			{
 				str= "["+nickname+"] "+client.textField.getText();
 				writer.println(str);
 				writer.flush();
 			}
-		
+
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());
 		}finally{
@@ -91,7 +97,7 @@ class ListeningThread extends Thread{
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			writer = new PrintWriter(socket.getOutputStream(), true);
-			
+
 			while(true){
 				String str=reader.readLine();
 				if(str==null)
