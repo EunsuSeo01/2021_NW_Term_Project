@@ -88,13 +88,14 @@ class EchoThread extends Thread{
 					new FileOutputStream("voteInfo.txt").close();//voteinfo초기화
 					view("<System> 낮이 되었습니다. 토론을 시작하세요.");
 					confirmVote = 0;
-					confirmKill = 0;
-					confirmHeal = 0;
-					confirmCheck = 0;
+
 				}
 				else if(string.equals("/n"))
 				{
 					view("<System> 밤이 되었습니다.");
+					confirmKill = 0;
+					confirmHeal = 0;
+					confirmCheck = 0;
 				}
 				else if(string.contains("/vote") && confirmVote == 0)
 				{
@@ -110,6 +111,8 @@ class EchoThread extends Thread{
 				{
 					String[] arr = string.split(" ");
 					mafiaTriedToKill = Integer.parseInt(arr[1]);
+					broadcast("<System> 마피아가 죽일사람을 결정했습니다! /n 의사는 살릴 사람을 결정해주세요");//마피아 죽일사람 정한 이후에 의사가 결정? but 의사가 죽으면????
+
 					System.out.println(playerID + "가 죽이려한건 " + mafiaTriedToKill);
 					System.out.println("kill!"+ mafiaTriedToKill);
 					confirmKill++;
@@ -222,7 +225,7 @@ class EchoThread extends Thread{
 				//나머지 socket들에게만 데이터를 보낸다.
 				if(socket != this.socket){
 					PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-					writer.println(str);
+					writer.println("(playerID: " + playerID + ") "+ str);
 					writer.flush();
 				}
 			}

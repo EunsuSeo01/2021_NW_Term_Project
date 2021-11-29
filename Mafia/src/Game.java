@@ -28,12 +28,14 @@ public class Game {
 	long dayTime;
 	long nightTime;
 	int voteTime;
+	EchoThread et;
 
 	public Game(Socket socket, Vector<Socket> player, int playerID) {
 		this.socket = socket;
 		this.player = player;
 		this.playerID = playerID;
 
+		et = new EchoThread(socket, player, playerID);
 		System.out.println("In Game, 난 " + playerID + "번이야");
 	}
 
@@ -45,12 +47,14 @@ public class Game {
 		nightTime = survivorNum * 1000; // 밤 시간 (생존자수*15초)
 	}
 
-	public void start() throws IOException { 
+	public void start() throws IOException {
 		set();
 		if(playerID == 1) { //역할 설정 처음 한번만
 			setRoles();
 			System.out.println("역할 설정할게");
 		}
+		
+		et.view("당신의 playerID는 " + playerID + "번입니다.");	// 자기도 자기의 playerID를 알아야 하니까 처음에 알려줌.
 
 		System.out.println("나는 게임의 플레이어 ID" + playerID);//player ID test
 
@@ -62,6 +66,61 @@ public class Game {
 			public void run() {
 				PrintWriter writer = null;
 				try{
+					File file = new File("clientInfo.txt");
+					BufferedReader br3 = new BufferedReader(new FileReader(file));
+					String s ="";
+					String[][] array = new String[survivorNum][4];
+					String str[] = null;
+					int count = 0;
+					int mafiaNum = 0;
+					int citizenNum = 0;
+					int playerNum = survivorNum;
+					str = new String[count];// 할당
+
+					BufferedReader br = new BufferedReader(new FileReader(file));
+
+					while ((s = br.readLine()) != null) {// 데이터 갯수 count에 저장
+						count++;
+					}
+					br.close();
+
+					str = new String[count];// 할당
+
+					int i = 0;// 데이터 저장
+					BufferedReader br2 = new BufferedReader(new FileReader(file));
+					while ((s = br2.readLine()) != null) {
+						str[i] = s;
+						i++;
+					}
+
+					for (i = 0; i < playerNum; i++) {// 초기화
+						for (int j = 0; j < 4; j++) {
+							array[i][j] = "";
+
+						}
+					}
+					for (i = 0; i < playerNum; i++) {// 배열에 파일 정보 저장
+						s = str[i];
+						String split[] = s.split(" ");
+
+						array[i][0] = split[0];
+						array[i][1] = split[1];
+						array[i][2] = split[2];
+						array[i][3] = split[3];
+					}
+
+					for (i = 0; i < playerNum; i++) {
+						if(array[i][2].equals("0"))
+						{
+							SV1 = i;
+							break;
+						}
+					}
+
+					System.out.println(SV1+" Sv1 come");
+
+					if(playerID == SV1+1)
+						checkWin(); //승리조건 확인
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/d");	// protocol
 					writer.flush();
@@ -79,8 +138,62 @@ public class Game {
 			public void run() {
 				PrintWriter writer = null;
 				try{
-					if(playerID == 1) {//voteCalculater 한번만 작동하도록해야함
-						//voteCalculater();
+					File file = new File("clientInfo.txt");
+					BufferedReader br3 = new BufferedReader(new FileReader(file));
+					String s ="";
+					String[][] array = new String[survivorNum][4];
+					String str[] = null;
+					int count = 0;
+					int mafiaNum = 0;
+					int citizenNum = 0;
+					int playerNum = survivorNum;
+					str = new String[count];// 할당
+
+					BufferedReader br = new BufferedReader(new FileReader(file));
+
+					while ((s = br.readLine()) != null) {// 데이터 갯수 count에 저장
+						count++;
+					}
+					br.close();
+
+					str = new String[count];// 할당
+
+					int i = 0;// 데이터 저장
+					BufferedReader br2 = new BufferedReader(new FileReader(file));
+					while ((s = br2.readLine()) != null) {
+						str[i] = s;
+						i++;
+					}
+
+					for (i = 0; i < playerNum; i++) {// 초기화
+						for (int j = 0; j < 4; j++) {
+							array[i][j] = "";
+
+						}
+					}
+					for (i = 0; i < playerNum; i++) {// 배열에 파일 정보 저장
+						s = str[i];
+						String split[] = s.split(" ");
+
+						array[i][0] = split[0];
+						array[i][1] = split[1];
+						array[i][2] = split[2];
+						array[i][3] = split[3];
+					}
+
+					for (i = 0; i < playerNum; i++) {
+						if(array[i][2].equals("0"))
+						{
+							SV1 = i;
+							break;
+						}
+					}
+
+					System.out.println(SV1+" Sv1 come");
+					if(playerID == SV1 +1)
+					{	
+						checkWin(); //승리조건 확인
+						voteCalculater();
 					}
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/n");	// protocol
@@ -482,22 +595,34 @@ public class Game {
 			int count = 0;
 			int mafiaNum = 0;
 			int citizenNum = 0;
+			int playerNum = survivorNum;
 			str = new String[count];// 할당
 
-			String asdf = "";
-			while ((s = br3.readLine()) != null) {
-				asdf +=  s + "/";
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
+			while ((s = br.readLine()) != null) {// 데이터 갯수 count에 저장
 				count++;
 			}
+			br.close();
 
-			for (int i = 0; i < count; i++) {// 초기화
+			str = new String[count];// 할당
+
+			int i = 0;// 데이터 저장
+			BufferedReader br2 = new BufferedReader(new FileReader(file));
+			while ((s = br2.readLine()) != null) {
+				str[i] = s;
+				i++;
+			}
+
+			for (i = 0; i < playerNum; i++) {// 초기화
 				for (int j = 0; j < 4; j++) {
 					array[i][j] = "";
 
 				}
 			}
-			for (int i = 0; i < count; i++) {// 배열에 파일 정보 저장
-				String split[] = asdf.split("/");
+			for (i = 0; i < playerNum; i++) {// 배열에 파일 정보 저장
+				s = str[i];
+				String split[] = s.split(" ");
 
 				array[i][0] = split[0];
 				array[i][1] = split[1];
@@ -505,13 +630,13 @@ public class Game {
 				array[i][3] = split[3];
 			}
 
-			for (int i = 0; i < count; i++)
+			for (i = 0; i < playerNum; i++)
 			{
-				if(array[i][1].equals("1") && array[i][3].equals("0"))
+				if(array[i][1].equals("1") && array[i][2].equals("0"))
 				{
 					mafiaNum++;
 				}
-				else if(!array[i][1].equals("1") && array[i][3].equals("0"))
+				else if(!array[i][1].equals("1") && array[i][2].equals("0"))
 				{
 					citizenNum++;
 				}
@@ -520,7 +645,7 @@ public class Game {
 			if(mafiaNum == 0)
 			{
 				writer = new PrintWriter(socket.getOutputStream(),true);
-				writer.println("/victory citizen");   // citizen win protocol
+				writer.println("victory citizen");
 				writer.flush();
 
 				System.exit(0);
@@ -528,7 +653,7 @@ public class Game {
 			else if(mafiaNum >= citizenNum)
 			{
 				writer = new PrintWriter(socket.getOutputStream(),true);
-				writer.println("/victory mafia");   // citizen win protocol
+				writer.println("victory mafia");
 				writer.flush();
 
 				System.exit(0);
