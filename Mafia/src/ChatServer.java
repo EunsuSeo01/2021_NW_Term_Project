@@ -95,6 +95,14 @@ class EchoThread extends Thread{
 					System.out.println(arr[0] + "," + arr[1]);
 					broadcast("<System> " + arr[1] + "번 님이 사망하셨습니다.");
 				}
+				else if(string.equals("/victory citizen"))
+				{
+					broadcast("<System> 시민이 승리했습니다.");
+				}
+				else if(string.equals("/victory mafia"))
+				{
+					broadcast("<System> 마피아가 승리했습니다.");
+				}
 				else
 				{
 					sending(string);	

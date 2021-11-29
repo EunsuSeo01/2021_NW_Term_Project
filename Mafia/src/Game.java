@@ -378,12 +378,70 @@ public class Game {
 		}	  
 	}
 
-	/**
-	 * 승리
-	 */
+	public void checkWinner() {
+		PrintWriter writer = null;
+		try{
+			File file = new File("clientInfo.txt");
+			BufferedReader br3 = new BufferedReader(new FileReader(file));
+			String s ="";
+			String[][] array = new String[survivorNum][4];
+			String str[] = null;
+			int count = 0;
+			int mafiaNum = 0;
+			int citizenNum = 0;
+			str = new String[count];// 할당
 
+			String asdf = "";
+			while ((s = br3.readLine()) != null) {
+				asdf += s;
+				count++;
+			}
 
-	/**
-	 * 패배
-	 */
+			for (int i = 0; i < count; i++) {// 초기화
+				for (int j = 0; j < 4; j++) {
+					array[i][j] = "";
+
+				}
+			}
+			for (int i = 0; i < count; i++) {// 배열에 파일 정보 저장
+				String split[] = asdf.split(" ");
+
+				array[i][0] = split[0];
+				array[i][1] = split[1];
+				array[i][2] = split[2];
+				array[i][3] = split[3];
+			}
+
+			for (int i = 0; i < count; i++)
+			{
+				if(Integer.parseInt(array[i][1]) == 1 && Integer.parseInt(array[i][3]) == 0)
+				{
+					mafiaNum++;
+				}
+				else if(Integer.parseInt(array[i][1]) != 1 && Integer.parseInt(array[i][3]) == 0)
+				{
+					citizenNum++;
+				}
+			}
+
+			if(mafiaNum == 0)
+			{
+				writer = new PrintWriter(socket.getOutputStream(),true);
+				writer.println("/victory citizen");   // citizen win protocol
+				writer.flush();
+
+				System.exit(0);
+			}
+			else if(mafiaNum >= citizenNum)
+			{
+				writer = new PrintWriter(socket.getOutputStream(),true);
+				writer.println("/victory mafia");   // citizen win protocol
+				writer.flush();
+
+				System.exit(0);
+			}
+		}catch(IOException ie){
+			System.out.println(ie.getMessage());
+		}
+	}
 }
