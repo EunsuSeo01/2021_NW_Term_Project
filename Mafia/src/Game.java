@@ -78,8 +78,8 @@ public class Game {
 				PrintWriter writer = null;
 				try{
 					if(playerID == 1) {//voteCalculater 한번만 작동하도록해야함
-						  voteCalculater();
-						}
+						voteCalculater();
+					}
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/n");	// protocol
 					writer.flush();
@@ -172,14 +172,13 @@ public class Game {
 		brv.close();
 
 		for (int i = 0; i < totalPlayer; i++) {// 배열 초기화
-			for (int j = 0; j < 2; j++) {
-				tieChecker[i][j] = 0;
+			tieChecker[i][0] = 0;
 
-			}
+
 		}
 
 
-		int tieNum = 1;//비긴사람수 +1
+		int tieNum = 0;//비긴사람수
 		int max =array[0][3];//max값 초기화
 		for (int i = 0; i < totalPlayer; i++) {// 각 플레이어 마다 득표수 비교
 			if(array[i][3]> max) {
@@ -197,16 +196,21 @@ public class Game {
 
 		int randomSelect[] = new int[tieNum];
 		int t = 0;
-		for (int i = 0; i < tieNum; i++) {
+		for (int i = 0; i < totalPlayer; i++) {
 			if (tieChecker[i][0]!=0) {
 				randomSelect[t] = i;
 				t++;
 			}
 		}
-		int rmd = new Random().nextInt(randomSelect.length);
-		maxVoteID = randomSelect[rmd];//동률일땐 동률중 랜덤으로 하나 아니면 그냥 저장. 진짜 ID로 쓸려면 +1 필요 (지금은 배열 index값임)
+		if(randomSelect.length == 1) {
+			maxVoteID = randomSelect[0];
+		}
+		else {
+			int rmd = new Random().nextInt(randomSelect.length);
+			maxVoteID = randomSelect[rmd];//동률일땐 동률중 랜덤으로 하나 아니면 그냥 저장.
+		}
+		return maxVoteID;//진짜 ID로 쓸려면 +1 필요 (지금은 배열 index값임)
 
-		return maxVoteID;
 
 	}
 
@@ -292,7 +296,7 @@ public class Game {
 			bwv2.newLine();
 		}
 		bwv2.close();
-		
+
 
 	}
 	public void voteCalculater()throws IOException {//파일을 열어 표를 집계한뒤 결과까지 총반영
@@ -303,11 +307,11 @@ public class Game {
 			voteCount(str);	
 		}
 		brv.close();
-	       new FileOutputStream("voteInfo.txt").close();//파일내용 초기화
-			int elected = voteResult();
-			killedByVote(elected);
-			voteReset();
-		
+		new FileOutputStream("voteInfo.txt").close();//파일내용 초기화
+		int elected = voteResult();
+		killedByVote(elected);
+		voteReset();
+
 	}
 	//***********vote 관련 메소드 끝
 
