@@ -152,17 +152,17 @@ public class Game {
 		else if(array[playerID - 1][1].equals("1")) {
 
 			System.out.println("1");
-			et.view("당신의 직업은 마피아입니다");
+			et.view("당신의 직업은 마피아입니다.\n살인 능력을 쓰시려면 /kill playerID 형식으로 입력해주세요.");
 
 		}
 		else if(array[playerID - 1][1].equals("2")) {
 			System.out.println("2");
-			et.view("당신의 직업은 의사입니다");
+			et.view("당신의 직업은 의사입니다.\n살리기 능력을 쓰시려면 /heal playerID 형식으로 입력해주세요.");
 
 		}
 		else if(array[playerID - 1][1].equals("3")) {
 			System.out.println("3");
-			et.view("당신의 직업은 경찰입니다");
+			et.view("당신의 직업은 경찰입니다.\n수사 능력을 쓰시려면 /check playerID 형식으로 입력해주세요.");
 
 		}
 	}
