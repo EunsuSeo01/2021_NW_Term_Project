@@ -18,7 +18,8 @@ class EchoThread extends Thread{
 	int playerID = 1;//게임진행시 필요한 플레이어 식별번호
 	int voteNum = 0; //투표를 받은 사람의 번호 저장
 	int confirmVote = 0; // 투표를 했는지 안했는지 저장
-	
+	Game game;
+
 	public EchoThread(Socket socket, Vector<Socket> vec, int playerID)
 	{
 		// If Socket and Vector are correct, set it to value.
@@ -27,6 +28,7 @@ class EchoThread extends Thread{
 			this.vec = vec;
 			currentClient = vec.size();
 			this.playerID = playerID;
+			System.out.println("In ChatServer, 나는 " +playerID +"번이야");
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -41,7 +43,7 @@ class EchoThread extends Thread{
 		BufferedReader reader = null;
 		try{
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
+
 			// Print the message that successfully connected with Client.
 			System.out.println(clientInfo + " - Connection to Client successful.");
 
@@ -62,9 +64,10 @@ class EchoThread extends Thread{
 				if(string.equals("/p") && vec.size() >= 4 && vec.size() <= 8)
 				{
 					broadcast("마피아 게임을 시작합니다!");
+					playerID = 1;
 					// Test
 					for(int i=0; i< vec.size(); i++) {
-						Game game = new Game(vec.get(i), vec, playerID);
+						game = new Game(vec.get(i), vec, playerID);
 						playerID++;
 						game.start();
 					}
@@ -84,13 +87,16 @@ class EchoThread extends Thread{
 				}
 				else if(string.contains("/vote") && confirmVote == 0)
 				{
-					voteNum = Integer.parseInt(string.substring(5).trim());
+					String[] arr = string.split(" ");
+					System.out.println(arr[0] + "," + arr[1]);	// test
+					voteNum = Integer.parseInt(arr[1]);
+					System.out.println(playerID + "가 투표한 건 " + voteNum);
+					makeVoteFile(voteNum);
 					System.out.println("Success!"+ voteNum);
 					confirmVote++;
 				}
 				else if(string.contains("/die"))
 				{
-					System.out.println("??");
 					String[] arr = string.split(" ");
 					System.out.println(arr[0] + "," + arr[1]);
 					broadcast("<System> " + arr[1] + "번 님이 사망하셨습니다.");
@@ -105,7 +111,7 @@ class EchoThread extends Thread{
 				}
 				else
 				{
-					sending(string);	
+					sending(string);
 				}
 			}
 
@@ -162,6 +168,23 @@ class EchoThread extends Thread{
 			}
 		}
 	}
+	
+	public void makeVoteFile(int voteNum) {
+		File file = new File("voteInfo.txt");
+		BufferedWriter bw;
+		String num = Integer.toString(voteNum);
+
+		System.out.println("vote file writer");
+		// 파일에 쓰기
+		try {
+			bw = new BufferedWriter(new FileWriter(file, true));
+			bw.write(num);
+			bw.newLine();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
 
 public class ChatServer {
@@ -181,6 +204,7 @@ public class ChatServer {
 				vec.add(socket);
 
 				new EchoThread(socket, vec, playerID).start();
+				playerID++;
 			}
 		}catch(IOException ie){
 			System.out.println(ie.getMessage());
