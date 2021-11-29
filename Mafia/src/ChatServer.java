@@ -16,7 +16,12 @@ class EchoThread extends Thread{
 	int currentClient;;
 	int playerID = 1;//게임진행시 필요한 플레이어 식별번호
 	int voteNum = 0; //투표를 받은 사람의 번호 저장
+	int mafiaTriedToKill = 0;//마피아가 죽이려든사람
+	int docTriedToheal = 0;//의사가 살릴려고 한사람
 	int confirmVote = 0; // 투표를 했는지 안했는지 저장
+	int confirmKill = 0;//죽였는지 아닌지 저장
+	int confirmHeal = 0;//살렸는지 아닌지 저장
+	
 	Game game;
 
 	public EchoThread(Socket socket, Vector<Socket> vec, int playerID)
@@ -80,6 +85,8 @@ class EchoThread extends Thread{
 					new FileOutputStream("voteInfo.txt").close();//voteinfo초기화
 					view("<System> 낮이 되었습니다. 토론을 시작하세요.");
 					confirmVote = 0;
+					confirmKill = 0;
+					confirmHeal = 0;
 				}
 				else if(string.equals("/n"))
 				{
@@ -94,6 +101,23 @@ class EchoThread extends Thread{
 					makeVoteFile(voteNum);
 					System.out.println("Success!"+ voteNum);
 					confirmVote++;
+				}
+				else if(string.contains("/kill")&& confirmKill == 0)//마피아능력
+				{
+					String[] arr = string.split(" ");
+					mafiaTriedToKill = Integer.parseInt(arr[1]);
+					System.out.println(playerID + "가 죽이려한건 " + mafiaTriedToKill);
+					System.out.println("kill!"+ mafiaTriedToKill);
+					confirmKill++;
+				}
+				else if(string.contains("/heal")&& confirmHeal == 0)//의사 능력
+				{
+					String[] arr = string.split(" ");
+					docTriedToheal = Integer.parseInt(arr[1]);
+					System.out.println(playerID + "가 살리려 한건 " + docTriedToheal);
+					System.out.println("Heal!"+ docTriedToheal);
+					confirmHeal++;
+					
 				}
 				else if(string.contains("/die"))
 				{
@@ -124,6 +148,14 @@ class EchoThread extends Thread{
 			}catch(IOException ie){
 				System.out.println(ie.getMessage());
 			}
+		}
+	}
+	public void mafVsDoc() {//마피아가 죽일지 의사가 살릴지
+		if((mafiaTriedToKill!=docTriedToheal)&&(mafiaTriedToKill!=0)) {
+
+		}
+		else if(mafiaTriedToKill==docTriedToheal&&(mafiaTriedToKill!=0)){
+			broadcast("<System> 의사가 플레이어" + docTriedToheal +"님을 살렸습니다!");
 		}
 	}
 

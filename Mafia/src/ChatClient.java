@@ -43,6 +43,18 @@ class WritingThread{
 				writer.println(str);
 				writer.flush();
 			}
+			else if(client.textField.getText().contains("/kill"))// game play protocol
+			{
+				str = client.textField.getText();
+				writer.println(str);
+				writer.flush();
+			}
+			else if(client.textField.getText().contains("/heal"))// game play protocol
+			{
+				str = client.textField.getText();
+				writer.println(str);
+				writer.flush();
+			}
 			else
 			{
 				str= "["+nickname+"] "+client.textField.getText();
