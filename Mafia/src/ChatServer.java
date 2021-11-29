@@ -168,7 +168,7 @@ class EchoThread extends Thread{
 			}
 		}
 	}
-	
+
 	public void makeVoteFile(int voteNum) {
 		File file = new File("voteInfo.txt");
 		BufferedWriter bw;

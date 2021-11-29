@@ -54,6 +54,8 @@ public class Game {
 
 		System.out.println("나는 게임의 플레이어 ID" + playerID);//player ID test
 
+		jobAlert();
+		
 		Timer daytimeTimer = new Timer();
 		TimerTask daytimeTask = new TimerTask() {
 			@Override
@@ -95,6 +97,76 @@ public class Game {
 		nightTimer.schedule(nightTimeTask, dayTime, dayTime + nightTime);
 
 	}
+
+	public void jobAlert() throws IOException {
+		EchoThread et = new EchoThread(socket, player, playerID);
+		int playerNum = survivorNum;
+		String[][] array = new String[playerNum][4];
+		String str[] = null;
+		int count = 0;
+		String s;
+
+		File file = new File("clientInfo.txt");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+
+		while ((s = br.readLine()) != null) {// 데이터 갯수 count에 저장
+			count++;
+		}
+		br.close();
+
+		str = new String[count];// 할당
+
+		int i = 0;// 데이터 저장
+		BufferedReader br2 = new BufferedReader(new FileReader(file));
+		while ((s = br2.readLine()) != null) {
+			str[i] = s;
+			i++;
+		}
+
+		for (i = 0; i < playerNum; i++) {// 초기화
+			for (int j = 0; j < 4; j++) {
+				array[i][j] = "";
+
+			}
+		}
+		for (i = 0; i < playerNum; i++) {// 배열에 파일 정보 저장
+			s = str[i];
+			String split[] = s.split(" ");
+
+			array[i][0] = split[0];
+			array[i][1] = split[1];
+			array[i][2] = split[2];
+			array[i][3] = split[3];
+		}
+
+		// civilian = 0
+		// mafia = 1
+		// doctor = 2
+		// cop = 3
+		System.out.println("? " + playerID);
+		if(array[playerID - 1][1].equals("0")) {
+			System.out.println("0");
+			et.view("당신의 직업은 시민입니다");
+
+		}
+		else if(array[playerID - 1][1].equals("1")) {
+
+			System.out.println("1");
+			et.view("당신의 직업은 마피아입니다");
+
+		}
+		else if(array[playerID - 1][1].equals("2")) {
+			System.out.println("2");
+			et.view("당신의 직업은 의사입니다");
+
+		}
+		else if(array[playerID - 1][1].equals("3")) {
+			System.out.println("3");
+			et.view("당신의 직업은 경찰입니다");
+
+		}
+	}
+
 	//*********** vote 관련 메소드시작
 
 	public void voteCount(String votedPlayer) throws IOException {//투표된 플레이어에게 득표수 +1
