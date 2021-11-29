@@ -1,14 +1,13 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Vector;
 
 class EchoThread extends Thread{
@@ -78,6 +77,7 @@ class EchoThread extends Thread{
 				}
 				else if(string.equals("/d"))
 				{
+					new FileOutputStream("voteInfo.txt").close();//voteinfo초기화
 					view("<System> 낮이 되었습니다. 토론을 시작하세요.");
 					confirmVote = 0;
 				}

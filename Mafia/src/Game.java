@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -76,6 +77,9 @@ public class Game {
 			public void run() {
 				PrintWriter writer = null;
 				try{
+					if(playerID == 1) {//voteCalculater 한번만 작동하도록해야함
+						  voteCalculater();
+						}
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/n");	// protocol
 					writer.flush();
@@ -93,7 +97,7 @@ public class Game {
 	}
 	//*********** vote 관련 메소드시작
 
-	public void voteCount() throws IOException {//투표된 플레이어에게 득표수 +1
+	public void voteCount(String votedPlayer) throws IOException {//투표된 플레이어에게 득표수 +1
 
 		int [][] array = new int [totalPlayer][4];
 		String str[] = null;
@@ -291,7 +295,20 @@ public class Game {
 		
 
 	}
-
+	public void voteCalculater()throws IOException {//파일을 열어 표를 집계한뒤 결과까지 총반영
+		File file = new File("voteInfo.txt");
+		BufferedReader brv = new BufferedReader(new FileReader(file));
+		String str ="";
+		while((str = brv.readLine()) != null) {
+			voteCount(str);	
+		}
+		brv.close();
+	       new FileOutputStream("voteInfo.txt").close();//파일내용 초기화
+			int elected = voteResult();
+			killedByVote(elected);
+			voteReset();
+		
+	}
 	//***********vote 관련 메소드 끝
 
 	public void rand(int roles[], int playernum) {// 역할 배열 랜덤 섞기
