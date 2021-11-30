@@ -24,6 +24,7 @@ class EchoThread extends Thread{
 	int confirmKill = 0;//죽였는지 아닌지 저장
 	int confirmHeal = 0;//살렸는지 아닌지 저장
 	int confirmCheck = 0;	// 수사했는지(1) 안 했는지(0) 저장.
+	Boolean isDay = true;
 
 	Game game;
 
@@ -90,6 +91,7 @@ class EchoThread extends Thread{
 					new FileOutputStream("voteInfo.txt").close();//voteinfo초기화
 					view("<System> 낮이 되었습니다. 토론을 시작하세요.");
 					confirmVote = 0;
+					isDay = true;
 
 				}
 				else if(string.equals("/n"))
@@ -100,6 +102,7 @@ class EchoThread extends Thread{
 					confirmKill = 0;
 					confirmHeal = 0;
 					confirmCheck = 0;
+					isDay = false;
 				}
 				else if(string.contains("/vote") && confirmVote == 0)
 				{
@@ -111,7 +114,7 @@ class EchoThread extends Thread{
 					System.out.println("Success!"+ voteNum);
 					confirmVote++;
 				}
-				else if(string.contains("/kill")&& confirmKill == 0)//마피아능력
+				else if(string.contains("/kill")&& confirmKill == 0 && isDay ==false)//마피아능력
 				{
 					String[] arr = string.split(" ");
 					mafiaTriedToKill = Integer.parseInt(arr[1]);
@@ -120,7 +123,7 @@ class EchoThread extends Thread{
 					System.out.println("kill!"+ mafiaTriedToKill);
 					confirmKill++;
 				}
-				else if(string.contains("/heal")&& confirmHeal == 0)//의사 능력
+				else if(string.contains("/heal")&& confirmHeal == 0 && isDay ==false)//의사 능력
 				{
 					String[] arr = string.split(" ");
 					docTriedToheal = Integer.parseInt(arr[1]);
@@ -130,7 +133,7 @@ class EchoThread extends Thread{
 					confirmHeal++;
 
 				}
-				else if(string.contains("/check")&& confirmCheck == 0)//경찰 능력
+				else if(string.contains("/check")&& confirmCheck == 0 && isDay ==false)//경찰 능력
 				{
 					String[] arr = string.split(" ");
 					copTriedTocheck = Integer.parseInt(arr[1]);
@@ -143,7 +146,7 @@ class EchoThread extends Thread{
 					confirmCheck++;
 
 				}
-				else if(string.contains("/check")&& confirmCheck == 1)//경찰의 실수로 명령어 들키는 거 방지
+				else if(string.contains("/check")&& confirmCheck == 1 && isDay ==false)//경찰의 실수로 명령어 들키는 거 방지
 				{
 					view("이번 턴에 이미 수사 기능을 사용하셨습니다. 다음 턴에 다시 시도하세요.");
 				}
