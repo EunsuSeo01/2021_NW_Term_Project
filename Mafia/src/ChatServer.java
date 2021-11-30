@@ -72,6 +72,8 @@ class EchoThread extends Thread{
 				{
 					broadcast("마피아 게임을 시작합니다!");
 					playerID = 1;
+					new FileOutputStream("mafiavoteInfo.txt").close();//mafiavoteinfo 초기화
+					new FileOutputStream("docvoteInfo.txt").close();//docvoteinfo 초기화
 					// Test
 					for(int i=0; i< vec.size(); i++) {
 						game = new Game(vec.get(i), vec, playerID);

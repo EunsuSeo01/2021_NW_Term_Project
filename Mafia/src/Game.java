@@ -522,23 +522,28 @@ public class Game {
 		String str1 ="";
 		String str2 ="";
 		String count = "";
-		
-		while((count = brv1.readLine()) != null) {
+
 			str1= brv1.readLine();
+			str2= brv2.readLine();
+		
+		if ((file1.length()!= 0) && (file2.length()!= 0)) {
+			if(str1.equals(str2)){
+				et.broadcast("의느님이 플레이어 "+ str1+ " 님을 살렸습니다!" );
+			}
+			else {
+				et.broadcast("마피아가 "+ str1+ " 님을 살해했습니다!" );
+				mafiaKilled = Integer.parseInt(str1);
+				mafiaResult(mafiaKilled);
+			}
 		}
 		
-		while((count = brv2.readLine()) != null) {
-			str2= brv1.readLine();
-		}
-		
-		if(str1.equals(str2)&& (file1.length()!= 0) && (file2.length()!= 0) ) {
-			et.broadcast("의느님이 플레이어 "+ str1+ " 님을 살렸습니다!" );
-		}
-		else if((str1.equals(str2) == false)&& (file1.length()!= 0)){
-			 et.broadcast("마피아가 "+ str1+ " 님을 살해했습니다!" );
+		else if((file1.length()!= 0)&&(file2.length()== 0)) {
+			et.broadcast("마피아가 "+ str1+ " 님을 살해했습니다!" );
 			mafiaKilled = Integer.parseInt(str1);
 			mafiaResult(mafiaKilled);
 		}
+		
+
 		 brv1.close();
 		 brv2.close();
 		
@@ -732,19 +737,19 @@ public class Game {
 
 			if(mafiaNum == 0)
 			{
-				writer = new PrintWriter(socket.getOutputStream(),true);
-				writer.println("victory citizen");
-				writer.flush();
-				//et.broadcast("victory citizen");
+				//writer = new PrintWriter(socket.getOutputStream(),true);
+				//writer.println("victory citizen");
+				//writer.flush();
+				et.broadcast("시민 승리!");
 
 				System.exit(0);
 			}
 			else if(mafiaNum >= citizenNum)
 			{
-				//et.broadcast("victory mafia");
-				writer = new PrintWriter(socket.getOutputStream(),true);
-				writer.println("victory mafia");
-				writer.flush();
+				et.broadcast("마피아 승리!");
+				//writer = new PrintWriter(socket.getOutputStream(),true);
+				//writer.println("victory mafia");
+				//writer.flush();
 
 				System.exit(0);
 			}
