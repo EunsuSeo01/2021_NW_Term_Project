@@ -28,6 +28,7 @@ public class Game {
 	long dayTime;
 	long nightTime;
 	int voteTime;
+	int SV1;
 	EchoThread et;
 
 	public Game(Socket socket, Vector<Socket> player, int playerID) {
@@ -43,8 +44,8 @@ public class Game {
 		survivorNum = player.size(); // 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
 		totalPlayer = player.size();
 		deadNum = 0;
-		dayTime = survivorNum * 1000; // 낮 시간 (생존자수*15초)
-		nightTime = survivorNum * 1000; // 밤 시간 (생존자수*15초)
+		dayTime = survivorNum * 10000; // 낮 시간 (생존자수*15초)
+		nightTime = survivorNum * 10000; // 밤 시간 (생존자수*15초)
 	}
 
 	public void start() throws IOException {
@@ -119,8 +120,9 @@ public class Game {
 
 					System.out.println(SV1+" Sv1 come");
 
-					if(playerID == SV1+1)
+					if(playerID == SV1+1) {
 						checkWin(); //승리조건 확인
+					}
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/d");	// protocol
 					writer.flush();
@@ -198,6 +200,8 @@ public class Game {
 					writer = new PrintWriter(socket.getOutputStream(),true);
 					writer.println("/n");	// protocol
 					writer.flush();
+					
+					checkDie();
 				}catch(IOException ie){
 					System.out.println(ie.getMessage());
 				}
@@ -495,8 +499,14 @@ public class Game {
 		new FileOutputStream("voteInfo.txt").close();//파일내용 초기화
 		int elected = voteResult();
 		killedByVote(elected);
+		announceVoteResult(elected);
+		
 		voteReset();
 
+	}
+	public void announceVoteResult(int electedplayerID) {//당선 결과 알림
+		electedplayerID = electedplayerID + 1;
+		et.broadcast("플레이어"+electedplayerID+"님이 투표로 인해 사망하였습니다");
 	}
 	//***********vote 관련 메소드 끝
 
@@ -584,7 +594,7 @@ public class Game {
 		}	  
 	}
 
-	public void checkWinner() {
+	public void checkWin() {
 		PrintWriter writer = null;
 		try{
 			File file = new File("clientInfo.txt");
@@ -644,17 +654,19 @@ public class Game {
 
 			if(mafiaNum == 0)
 			{
-				writer = new PrintWriter(socket.getOutputStream(),true);
-				writer.println("victory citizen");
-				writer.flush();
+				//writer = new PrintWriter(socket.getOutputStream(),true);
+				//writer.println("victory citizen");
+				//writer.flush();
+				et.broadcast("victory citizen");
 
 				System.exit(0);
 			}
 			else if(mafiaNum >= citizenNum)
 			{
-				writer = new PrintWriter(socket.getOutputStream(),true);
-				writer.println("victory mafia");
-				writer.flush();
+				et.broadcast("victory mafia");
+				//writer = new PrintWriter(socket.getOutputStream(),true);
+				//writer.println("victory mafia");
+				//writer.flush();
 
 				System.exit(0);
 			}

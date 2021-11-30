@@ -147,7 +147,7 @@ class EchoThread extends Thread{
 				{
 					String[] arr = string.split(" ");
 					System.out.println(arr[0] + "," + arr[1]);
-					broadcast("<System> " + arr[1] + "¹ø ´ÔÀÌ »ç¸ÁÇÏ¼Ì½À´Ï´Ù.");
+					//broadcast("<System> " + arr[1] + "¹ø ´ÔÀÌ »ç¸ÁÇÏ¼Ì½À´Ï´Ù.");
 				}
 				else if(string.equals("/victory citizen"))
 				{
