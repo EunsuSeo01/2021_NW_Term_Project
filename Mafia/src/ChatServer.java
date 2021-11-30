@@ -36,7 +36,7 @@ class EchoThread extends Thread{
 			this.vec = vec;
 			currentClient = vec.size();
 			this.playerID = playerID;
-			System.out.println("In ChatServer, 나는 " +playerID +"번이야");
+			//System.out.println("In ChatServer, 나는 " +playerID +"번이야");
 		}
 		// Otherwise, the thread is interrupted!
 		else {
@@ -56,7 +56,7 @@ class EchoThread extends Thread{
 			System.out.println(clientInfo + " - Connection to Client successful.");
 
 			//test
-			System.out.println("currentClient: "+ currentClient);
+			//System.out.println("currentClient: "+ currentClient);
 
 			String string = null;
 
@@ -71,7 +71,7 @@ class EchoThread extends Thread{
 				}
 				if(string.equals("/p") && vec.size() >= 4 && vec.size() <= 8)
 				{
-					broadcast("마피아 게임을 시작합니다!");
+					broadcast("마피아 게임을 시작합니다!\n------------------------------------\n투표는 /vote playerID 형식으로 입력해주세요.");
 					playerID = 1;
 					new FileOutputStream("mafiavoteInfo.txt").close();//mafiavoteinfo 초기화
 					new FileOutputStream("docvoteInfo.txt").close();//docvoteinfo 초기화
@@ -112,6 +112,7 @@ class EchoThread extends Thread{
 					System.out.println(playerID + "가 투표한 건 " + voteNum);
 					makeVoteFile(voteNum);
 					System.out.println("Success!"+ voteNum);
+					broadcast("누군가 투표를 진행하였습니다!");
 					confirmVote++;
 				}
 				else if(string.contains("/kill")&& confirmKill == 0 && isDay ==false)//마피아능력
@@ -150,20 +151,6 @@ class EchoThread extends Thread{
 				{
 					view("이번 턴에 이미 수사 기능을 사용하셨습니다. 다음 턴에 다시 시도하세요.");
 				}
-				else if(string.contains("/die"))
-				{
-					String[] arr = string.split(" ");
-					System.out.println(arr[0] + "," + arr[1]);
-					//broadcast("<System> " + arr[1] + "번 님이 사망하셨습니다.");
-				}
-				else if(string.equals("/victory citizen"))
-				{
-					broadcast("<System> 시민이 승리했습니다.");
-				}
-				else if(string.equals("/victory mafia"))
-				{
-					broadcast("<System> 마피아가 승리했습니다.");
-				}
 				else
 				{
 					sending(string);
@@ -189,7 +176,7 @@ class EchoThread extends Thread{
 			String str;
 			int line = 0;
 
-			System.out.println("Cop's checking ... ");
+			//System.out.println("Cop's checking ... ");
 			while ((str = fileReader.readLine()) != null) {
 				String arr[] = str.split(" ");
 				if (line + 1 == playerID && arr[1].equals("1")) {
@@ -252,7 +239,7 @@ class EchoThread extends Thread{
 		BufferedWriter bw;
 		String num = Integer.toString(voteNum);
 
-		System.out.println("vote file writer");
+		//System.out.println("vote file writer");
 		// 파일에 쓰기
 		try {
 			bw = new BufferedWriter(new FileWriter(file, true));
@@ -269,7 +256,7 @@ class EchoThread extends Thread{
 		BufferedWriter bw;
 		String num = Integer.toString(mafChose);
 
-		System.out.println("mafia file writer");
+		//System.out.println("mafia file writer");
 		// 파일에 쓰기
 		try {
 			bw = new BufferedWriter(new FileWriter(file, true));
@@ -285,7 +272,7 @@ class EchoThread extends Thread{
 		BufferedWriter bw;
 		String num = Integer.toString(docChose);
 
-		System.out.println("doctor file writer");
+		//System.out.println("doctor file writer");
 		// 파일에 쓰기
 		try {
 			bw = new BufferedWriter(new FileWriter(file, true));
