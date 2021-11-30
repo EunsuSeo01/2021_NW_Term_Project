@@ -92,6 +92,8 @@ class EchoThread extends Thread{
 				}
 				else if(string.equals("/n"))
 				{
+					new FileOutputStream("mafiavoteInfo.txt").close();//mafiavoteinfo 초기화
+					new FileOutputStream("docvoteInfo.txt").close();//docvoteinfo 초기화
 					view("<System> 밤이 되었습니다.");
 					confirmKill = 0;
 					confirmHeal = 0;
@@ -111,9 +113,8 @@ class EchoThread extends Thread{
 				{
 					String[] arr = string.split(" ");
 					mafiaTriedToKill = Integer.parseInt(arr[1]);
-					broadcast("<System> 마피아가 죽일사람을 결정했습니다! /n 의사는 살릴 사람을 결정해주세요");//마피아 죽일사람 정한 이후에 의사가 결정? but 의사가 죽으면????
-
 					System.out.println(playerID + "가 죽이려한건 " + mafiaTriedToKill);
+					makeMafFile(mafiaTriedToKill);
 					System.out.println("kill!"+ mafiaTriedToKill);
 					confirmKill++;
 				}
@@ -122,6 +123,7 @@ class EchoThread extends Thread{
 					String[] arr = string.split(" ");
 					docTriedToheal = Integer.parseInt(arr[1]);
 					System.out.println(playerID + "가 살리려 한건 " + docTriedToheal);
+					makeDocFile(docTriedToheal);
 					System.out.println("Heal!"+ docTriedToheal);
 					confirmHeal++;
 
@@ -172,14 +174,6 @@ class EchoThread extends Thread{
 			}catch(IOException ie){
 				System.out.println(ie.getMessage());
 			}
-		}
-	}
-	public void mafVsDoc() {//마피아가 죽일지 의사가 살릴지
-		if((mafiaTriedToKill!=docTriedToheal)&&(mafiaTriedToKill!=0)) {
-
-		}
-		else if(mafiaTriedToKill==docTriedToheal&&(mafiaTriedToKill!=0)){
-			broadcast("<System> 의사가 플레이어" + docTriedToheal +"님을 살렸습니다!");
 		}
 	}
 
@@ -263,6 +257,40 @@ class EchoThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void makeMafFile(int mafChose) {
+		File file = new File("mafiavoteInfo.txt");
+		BufferedWriter bw;
+		String num = Integer.toString(mafChose);
+
+		System.out.println("mafia file writer");
+		// 파일에 쓰기
+		try {
+			bw = new BufferedWriter(new FileWriter(file, true));
+			bw.write(num);
+			bw.newLine();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void makeDocFile(int docChose) {
+		File file = new File("docvoteInfo.txt");
+		BufferedWriter bw;
+		String num = Integer.toString(docChose);
+
+		System.out.println("doctor file writer");
+		// 파일에 쓰기
+		try {
+			bw = new BufferedWriter(new FileWriter(file, true));
+			bw.write(num);
+			bw.newLine();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
 

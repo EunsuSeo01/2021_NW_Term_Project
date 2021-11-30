@@ -44,8 +44,8 @@ public class Game {
 		survivorNum = player.size(); // 게임을 시작한 현재 게임 플레이어 수. 즉, 생존자 수.
 		totalPlayer = player.size();
 		deadNum = 0;
-		dayTime = survivorNum * 10000; // 낮 시간 (생존자수*15초)
-		nightTime = survivorNum * 10000; // 밤 시간 (생존자수*15초)
+		dayTime = survivorNum * 5000; // 낮 시간 (생존자수*15초)
+		nightTime = survivorNum * 50000; // 밤 시간 (생존자수*15초)
 	}
 
 	public void start() throws IOException {
@@ -506,9 +506,13 @@ public class Game {
 	}
 	public void announceVoteResult(int electedplayerID) {//당선 결과 알림
 		electedplayerID = electedplayerID + 1;
-		et.broadcast("플레이어"+electedplayerID+"님이 투표로 인해 사망하였습니다");
+		et.broadcast("플레이어 "+electedplayerID+" 님이 투표로 인해 사망하였습니다");
 	}
 	//***********vote 관련 메소드 끝
+	
+	public void mafiaVsDoc() throws IOException{//마피아 의사 능력결과
+		
+	}
 
 	public void rand(int roles[], int playernum) {// 역할 배열 랜덤 섞기
 		Random rd = new Random();
